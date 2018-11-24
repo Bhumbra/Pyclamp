@@ -1,0 +1,155 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"  
+  "http://www.w3.org/TR/html4/loose.dtd">  
+<html > 
+<head><title>Waveform navigation</title> 
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1"> 
+<meta name="generator" content="TeX4ht (http://www.cse.ohio-state.edu/~gurari/TeX4ht/)"> 
+<meta name="originator" content="TeX4ht (http://www.cse.ohio-state.edu/~gurari/TeX4ht/)"> 
+<!-- html,3,next --> 
+<meta name="src" content="pyclamp.tex"> 
+<meta name="date" content="2015-10-19 01:52:00"> 
+<link rel="stylesheet" type="text/css" href="pyclamp.css"> 
+</head><body 
+>
+   <!--l. 116--><div class="crosslinks"><p class="noindent">[<a 
+href="pyclampsu3.html" >next</a>] [<a 
+href="pyclampsu1.html" >prev</a>] [<a 
+href="pyclampsu1.html#tailpyclampsu1.html" >prev-tail</a>] [<a 
+href="#tailpyclampsu2.html">tail</a>] [<a 
+href="pyclampse2.html#pyclampsu2.html" >up</a>] </p></div>
+   <h4 class="subsectionHead"><span class="titlemark">2.2   </span> <a 
+ id="x5-40002.2"></a>Waveform navigation</h4>
+<!--l. 118--><p class="noindent" >Waveform navigation is performed by mouse movements, mouse clicks, and
+mouse wheel movements. It can take some getting used to. However with
+practice, users will quickly become more efficient in waveform navigation in
+comparison to navigating through traditional interfaces based on icons and
+scrollbars.
+<!--l. 122--><p class="indent" >   Pyclamp benefits substantially from the interactivity of Luke Campagnola&#8217;s
+PyQtGraph, which is a Python package that exploits the functionality of all three
+mouse buttons. This may make things tricky for users of Apple mice. Clicking while
+keeping the mouse motionless performs different functions depending on the
+button:
+<!--l. 126--><p class="indent" >
+     <dl class="description"><dt class="description">
+<span 
+class="cmbx-10">Left-click:</span> </dt><dd 
+class="description">Select episode.
+     </dd><dt class="description">
+<span 
+class="cmbx-10">Middle-click:</span> </dt><dd 
+class="description">Toggle between concatenated and overlayed display.
+     </dd><dt class="description">
+<span 
+class="cmbx-10">Right-click:</span> </dt><dd 
+class="description">Brings up the context menu to &#8216;View All&#8217;.</dd></dl>
+<!--l. 132--><p class="indent" >   The other options in the context menu, seen after clicking the right mouse
+button, are not recommended. Note that the instead of using the middle
+button, a user may press the spacebar on the keyboard to toggle between
+concatenated and overlayed displays. Note that the waveform data is colour-coded
+according whether an episode occurs at the beginning (red) or end (blue) of a
+recording. While this is self-evident in the concatenated view, the colour
+code can be helpful in the overlayed view to detect gradual changes over
+time.
+<!--l. 138--><p class="indent" >   The mouse-wheel performs different navigation functions depending on the
+direction:
+<!--l. 140--><p class="indent" >
+     <dl class="description"><dt class="description">
+<span 
+class="cmbx-10">Wheel-up:</span> </dt><dd 
+class="description">Zoom in.
+     </dd><dt class="description">
+<span 
+class="cmbx-10">Wheel-down:</span> </dt><dd 
+class="description">Zoom out.</dd></dl>
+<!--l. 145--><p class="indent" >   If a mouse is moved while a button is depressed, or &#8216;dragged&#8217;, the specific
+navigation performed depends on the button:
+<!--l. 147--><p class="indent" >
+
+     <dl class="description"><dt class="description">
+<span 
+class="cmbx-10">Left-drag:</span> </dt><dd 
+class="description">Windowed-zoom.
+     </dd><dt class="description">
+<span 
+class="cmbx-10">Middle-drag:</span> </dt><dd 
+class="description">Pan.
+     </dd><dt class="description">
+<span 
+class="cmbx-10">Right-drag:</span> </dt><dd 
+class="description"><span 
+class="cmmi-10">x </span>(vertical) and <span 
+class="cmmi-10">y </span>(horizontal) zoom/unzoom.</dd></dl>
+<!--l. 153--><p class="indent" >   The effect of windowed-zoom performed by the left-drag is dependent on the
+direction:
+<!--l. 155--><p class="indent" >
+     <dl class="description"><dt class="description">
+<span 
+class="cmbx-10">Down and right (or while pressing both &#8216;Meta&#8217; and &#8216;Alt&#8217;):</span> </dt><dd 
+class="description">Zoom    in
+     both <span 
+class="cmmi-10">x </span>and <span 
+class="cmmi-10">y </span>directions.
+     </dd><dt class="description">
+<span 
+class="cmbx-10">Up and right (or while pressing &#8216;Meta&#8217;):</span> </dt><dd 
+class="description">Zoom only in <span 
+class="cmmi-10">x </span>direction.
+     </dd><dt class="description">
+<span 
+class="cmbx-10">Down and left (or while pressing &#8216;Alt&#8217;):</span> </dt><dd 
+class="description">Zoom only in <span 
+class="cmmi-10">y </span>direction.
+     </dd><dt class="description">
+<span 
+class="cmbx-10">Up and left:</span> </dt><dd 
+class="description">View all.</dd></dl>
+<!--l. 162--><p class="indent" >   Windows users may want to know that the &#8216;Meta&#8217; key is in fact what is
+commonly called the &#8216;Windows&#8217; key. Note that the &#8216;Meta&#8217; and &#8216;Alt&#8217; keys can be used
+to during all mouse movements to lock the <span 
+class="cmmi-10">y </span>and <span 
+class="cmmi-10">x </span>axes respectively. The only
+exception to this is if the left button is clicked with the mouse motionless, which
+performs a &#8216;view all&#8217; navigation. It&#8217;s also possible to &#8216;select&#8217; single events
+using the left mouse button. Multiple events can be selected by holding
+&#8216;Shift&#8217; (or toggled using &#8216;Control&#8217;) before using left mouse button to drag
+a frame around the events you wish to select. There are also hotkeys for
+selection:
+<!--l. 169--><p class="indent" >
+     <dl class="description"><dt class="description">
+<span 
+class="cmbx-10">&#8216;U&#8217; key:</span> </dt><dd 
+class="description">select all episodes.
+     </dd><dt class="description">
+<span 
+class="cmbx-10">&#8216;I&#8217; key:</span> </dt><dd 
+class="description">invert current selection.
+     </dd><dt class="description">
+<span 
+class="cmbx-10">&#8216;O&#8217; key:</span> </dt><dd 
+class="description">unselect all episodes.</dd></dl>
+<!--l. 175--><p class="indent" >   Finally, two keyboard buttons can be used to remove/return selected waveform
+episodes:
+<!--l. 177--><p class="indent" >
+
+     <dl class="description"><dt class="description">
+<span 
+class="cmbx-10">&#8216;Delete&#8217; key:</span> </dt><dd 
+class="description">delete selected episode.
+     </dd><dt class="description">
+<span 
+class="cmbx-10">&#8216;Insert&#8217; key:</span> </dt><dd 
+class="description">return most recently deleted episode.</dd></dl>
+<!--l. 182--><p class="indent" >   Apart from these keys, none of the operations described above actually change
+the waveform data. There a number of buttons towards the bottom screen, that allow
+the user to manipulate the waveform data, but note that these changes in no way
+affect the original wave data file.
+
+   <!--l. 186--><div class="crosslinks"><p class="noindent">[<a 
+href="pyclampsu3.html" >next</a>] [<a 
+href="pyclampsu1.html" >prev</a>] [<a 
+href="pyclampsu1.html#tailpyclampsu1.html" >prev-tail</a>] [<a 
+href="pyclampsu2.html" >front</a>] [<a 
+href="pyclampse2.html#pyclampsu2.html" >up</a>] </p></div>
+<!--l. 186--><p class="indent" >   <a 
+ id="tailpyclampsu2.html"></a>  
+</body></html> 
