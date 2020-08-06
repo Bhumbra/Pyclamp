@@ -23,7 +23,7 @@ from dtypes import *
 from lsfunc import *
 from fpfunc import *
 from iofunc import *
-import prob
+import discprob
 import time
 
 CWDIR = os.getcwd()
@@ -60,13 +60,13 @@ def QLF(_x, _e, _n, _g, _l, _a, _s):
     c = stats.binom.pmf(np.tile(np.arange(n+1).reshape(n+1, 1), (1, len(x))), n, s)    
   else:
     b = a / s - a
-    c = prob.betanompmf(n, a, b)  
+    c = discprob.betanompmf(n, a, b)  
   p = np.zeros(x.shape, dtype = float)
   for i in range(n+1):
     if not(i):
       p += c[i] * stats.norm.pdf(x, 0.0, e)
     else:
-      p += c[i] * prob.gampdf(x, g*float(i), l)        
+      p += c[i] * discprob.gampdf(x, g*float(i), l)        
   return p
 
 def QLV(_m1, _e, _n, _g, _l, _a = None):
@@ -94,7 +94,7 @@ def QLV(_m1, _e, _n, _g, _l, _a = None):
     b[b < bmin] = bmin
     b[b > bmax] = bmax
     a = np.tile(a, (M))
-    c = prob.betanompmf(n, a, b)
+    c = discprob.betanompmf(n, a, b)
   x = np.tile(np.linspace(0.0, r, n+1).reshape(1, n+1), (M, 1))
   cx = np.sum(c*x, axis = 1)
   m2 = np.sum(c*(x-np.tile(cx.reshape(M, 1), (1, n+1)))**2.0, axis = 1)
@@ -117,7 +117,7 @@ def qlfun(p, x, i, e, n, opts): # opts = 0 returns value, 1 returns derivative, 
     C[j] = stats.binom.pmf(j, n, si)
   y = C[0] * stats.norm.pdf(x, 0., e)
   for j in range(1, n):
-    y += C[j] * prob.gampdf(x, g*float(i), l)
+    y += C[j] * discprob.gampdf(x, g*float(i), l)
   if not(opts):
     return y
 
@@ -134,7 +134,7 @@ def ParExpSum(i, x, Lgkj, Lrkj, Gdj, z = 0.):
   xi = x[i]
   if xi <= 0: return z
   lxi = np.log(xi)
-  #Gm = prob.gampdf(x, self.Gi[i], self.Ls[k][i])
+  #Gm = discprob.gampdf(x, self.Gi[i], self.Ls[k][i])
   #y = np.exp(- g * np.log(l) - x/l - sp.special.gammaln(g) + (g-1.0)*np.log(x) )
   return np.exp(Lgkj + Lrkj*xi + Gdj*lxi)
 
@@ -307,7 +307,7 @@ class qbay:
   def setPriors(self, rescoef = None, resmin = None, resmax = None, _modelBeta = True):
     self.modelBeta = _modelBeta
     self.setRes(rescoef, resmin, resmax)    
-    self.Pr = prob.mass()    
+    self.Pr = discprob.mass()    
     self.Pr.setx([self.sres, self.vres, self.ares, self.nres, self.ires, self.mres], [-2, 1, 1, 0, 0, 0], self.slims, self.vlims, self.alims, self.nlims, self.ilims, self.mn)
     self.Pr.setUniPrior() # [0, 0, 0, 2, 0, 0]
     self.s = self.Pr.X[0]
@@ -330,7 +330,7 @@ class qbay:
     else: 
       # --- the short but sadly incorrect way ---
     
-      # self.C = prob.betabinopmf(self.I, self.N, self.A, self.B) 
+      # self.C = discprob.betabinopmf(self.I, self.N, self.A, self.B) 
     
       # --- the long way ----
       #'''
@@ -343,7 +343,7 @@ class qbay:
       for i in range(self.nres):
         h = self.n[i]+1
         pb.forceupdate([i, 0])
-        bp = prob.betanomial(self.n[i], ar, br, pb)
+        bp = discprob.betanomial(self.n[i], ar, br, pb)
         self.C[:, :, :, i, :h, :] = np.tile(bp.reshape(self.sres, 1, self.ares, h, 1), (1, self.vres, 1, 1, self.mres))  
       pb.close()  
       #'''
@@ -351,8 +351,8 @@ class qbay:
       ''' 
       # --- the very long way ---
       self.C = np.zeros((self.sres, self.vres, self.ares, self.nres, self.ires, self.mres), dtype = float)
-      lh = prob.mass()
-      pr = prob.mass()
+      lh = discprob.mass()
+      pr = discprob.mass()
       pb = pbfig("Constructing priors")
       pb.setup(['$n$', '$s$', r'$\alpha$'], [self.nres, self.sres, self.ares], ['r', 'g', 'b'])    
       for i in range(self.nres):
@@ -369,7 +369,7 @@ class qbay:
             sj = self.s[j]
             for k in range(self.ares):
               pb.update([i, j, k])
-              sk = prob.betasample(ni, self.a[k], None, sj)
+              sk = discprob.betasample(ni, self.a[k], None, sj)
               mpr = [[]] * ni
               for l in range(ni):
                 mpr[l] = np.array( (1. - sk[l], sk[l]) )
@@ -398,7 +398,7 @@ class qbay:
       Xi = self.pol * nanravel(self.X[i])
       pb.setup(['Data set', 'Datum'], [self.mres, len(Xi)], ['r', 'b'])      
       pb.update([i, 0])
-      pr = prob.mass(self.Pr.P.sum(4)[:, :, :, :, i], self.Pr.X[:4])
+      pr = discprob.mass(self.Pr.P.sum(4)[:, :, :, :, i], self.Pr.X[:4])
       self.LL[i] = np.log(pr.P + mino)
       pb.setlast("Calculating...", len(Xi), 'b')
       for j in range(len(Xi)):
@@ -407,12 +407,12 @@ class qbay:
         if Xi[j] >= 0:
           #Gj = self.C[:, :, :, :, 1:, i] * stats.gamma.pdf(Xi[j], self.AI[:, :, :, :, 1:, i], 0.0, self.B[:, :, :, :, 1:, i]) - buggy (blame scipy.stats)
           '''
-          Gj = self.C[:, :, :, :, 1:, i] * prob.gampdf(Xi[j], self.GI[:, :, :, :, 1:, i], self.L[:, :, :, :, 1:, i])                    
+          Gj = self.C[:, :, :, :, 1:, i] * discprob.gampdf(Xi[j], self.GI[:, :, :, :, 1:, i], self.L[:, :, :, :, 1:, i])                    
           Pj += np.sum(Gj, 4)
           '''
           for k in range(self.nres):
             ni = self.n[k] + 1
-            Gj = self.C[:, :, :, k, 1:ni, i] * prob.gampdf(Xi[j], self.GI[:, :, :, k, 1:ni, i], self.L[:, :, :, k, 1:ni, i])
+            Gj = self.C[:, :, :, k, 1:ni, i] * discprob.gampdf(Xi[j], self.GI[:, :, :, k, 1:ni, i], self.L[:, :, :, k, 1:ni, i])
             Pj[:, :, :, k] += np.sum(Gj, 3)
         
         self.LL[i] += np.log(Pj + mino)
@@ -427,7 +427,7 @@ class qbay:
     self.calcHatValues()    
   def calcCondPosts(self):
     mino = 1e-300
-    self.PQGARM = prob.mass()
+    self.PQGARM = discprob.mass()
     self.PQGARM.setx([self.qres, self.gres, self.ares, self.rres, self.mres], [1, 0, 1, 1, 0], self.qlims, self.g, self.a, self.rlims, self.m)
     self.PQGARM.setUniPrior()
     self.q = self.PQGARM.X[0]            
@@ -438,8 +438,8 @@ class qbay:
     pb.setup('Data set', self.mres, 'r') 
     for i in range(self.mres):      
       pb.update(i)
-      pr = prob.mass(self.PQGARM.P[:, :, :, :, i], self.PQGARM.X[:4])
-      lh = prob.mass(self.PSVANM.P[:, :, :, :, i], self.PSVANM.X[:4])      
+      pr = discprob.mass(self.PQGARM.P[:, :, :, :, i], self.PQGARM.X[:4])
+      lh = discprob.mass(self.PSVANM.P[:, :, :, :, i], self.PSVANM.X[:4])      
       lhR = self.m[i] / (lh.repa(0)+mino)
       lhG = 1.0 / (lh.repa(1)**2.0 + mino)
       lhA = lh.repa(2)
@@ -463,7 +463,7 @@ class qbay:
     self.absa = np.fabs(self.a)
     self.absr = np.fabs(self.r)    
     self.absn = np.fabs(self.n)
-    pr = prob.mass()
+    pr = discprob.mass()
     pr.setX(self.n)
     pr.setUniPrior()
     lh = self.PQGAR.copy()
@@ -495,11 +495,11 @@ class qbay:
     self.PG = self.PQG.marginal(1)   
     self.PA = self.PAR.marginal(0)
     self.PR = self.PQR.marginal(1)
-    self.PSM = prob.mass()
+    self.PSM = discprob.mass()
     self.PSM.setx([self.sres, self.mres], [0, 0], self.s, self.m)
     self.PSM.setUniPrior()
     for i in range(self.mres):
-      pr = prob.mass(self.PSM.P[:, i], self.PSM.X[0])
+      pr = discprob.mass(self.PSM.P[:, i], self.PSM.X[0])
       pr.calcPost(self.PR, np.fabs(self.m[i] / self.PR.X[0]))
       self.PSM.P[:, i] = pr.P / sum(pr.P)    
   def calcHatValues(self):    
@@ -513,7 +513,7 @@ class qbay:
     #self.hatv = np.sqrt((self.hatv * self.hatq) ** 2.0 - self.hate**2.0)/self.hatq - we now neglect the effect of self.e
     self.hats = np.empty(self.mres, dtype = float)
     for i in range(self.mres):
-      pr = prob.mass(self.PSM.P[:,i], self.s)
+      pr = discprob.mass(self.PSM.P[:,i], self.s)
       self.hats[i] = self.m[i]/self.hatr # pr.sample(1)
     self.hatvr= QLV(self.mn, self.hate, self.hatn, self.hatg, self.hatl, self.hata)  
   def plotMarg0(self, fi = None, _nr = None, _nc = None, counter = None): # plots direct marginals

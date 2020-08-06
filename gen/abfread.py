@@ -235,9 +235,9 @@ class ABF:
     self.totalSamplingInterval = self.fADCSampleInterval * self.nADCNumChannels
     self.samplint = float(self.fADCSampleInterval) * float(self.nADCNumChannels) * 1e-6
     self.nData = self.lActualAcqLength
-    self.nChannels = self.nADCNumChannels
-    self.nEpisodes = max(1, self.lActualEpisodes)
-    self.nSamples = self.nData / (self.nEpisodes * self.nChannels)
+    self.nChannels = int(self.nADCNumChannels)
+    self.nEpisodes = max(1, int(self.lActualEpisodes))
+    self.nSamples = int(self.nData / (self.nEpisodes * self.nChannels))
   def ReadSections(self, _offset = 76, _delta = 16):
     offset = _offset
     delta = _delta

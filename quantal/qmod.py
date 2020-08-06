@@ -10,7 +10,7 @@ import scipy.stats as stats
 from lsfunc import *
 from fpfunc import *
 from iofunc import *
-import prob
+import discprob
 import time
 from PyQt4 import QtGui
 from PyQt4 import QtCore
@@ -64,13 +64,13 @@ def QLF(_x, _e, _n, _g, _l, _a, _s):
     c = stats.binom.pmf(np.tile(np.arange(n+1).reshape(n+1, 1), (1, len(x))), n, s)
   else:
     b = a / s - a
-    c = prob.betanompmf(n, a, b)
+    c = discprob.betanompmf(n, a, b)
   p = np.zeros(x.shape, dtype = float)
   for i in range(n+1):
     if not(i):
       p += c[i] * stats.norm.pdf(x, 0.0, e)
     else:
-      p += c[i] * prob.gampdf(x, g*float(i), l)
+      p += c[i] * discprob.gampdf(x, g*float(i), l)
   return p
 
 def QLV(_m1, _e, _n, _g, _l, _a = None):
@@ -98,7 +98,7 @@ def QLV(_m1, _e, _n, _g, _l, _a = None):
     b[b < bmin] = bmin
     b[b > bmax] = bmax
     a = np.tile(a, (M))
-    c = prob.betanompmf(n, a, b)
+    c = discprob.betanompmf(n, a, b)
   x = np.tile(np.linspace(0.0, r, n+1).reshape(1, n+1), (M, 1))
   cx = np.sum(c*x, axis = 1)
   m2 = np.sum(c*(x-np.tile(cx.reshape(M, 1), (1, n+1)))**2.0, axis = 1)
@@ -121,7 +121,7 @@ def qlfun(p, x, i, e, n, opts): # opts = 0 returns value, 1 returns derivative, 
     C[j] = stats.binom.pmf(j, n, si)
   y = C[0] * stats.norm.pdf(x, 0., e)
   for j in range(1, n):
-    y += C[j] * prob.gampdf(x, g*float(i), l)
+    y += C[j] * discprob.gampdf(x, g*float(i), l)
   if not(opts):
     return y
 
@@ -138,7 +138,7 @@ def ParExpSum(i, x, Lgkj, Lrkj, Gdj, z = 0.):
   xi = x[i]
   if xi <= 0: return z
   lxi = np.log(xi)
-  #Gm = prob.gampdf(x, self.Gi[i], self.Ls[k][i])
+  #Gm = discprob.gampdf(x, self.Gi[i], self.Ls[k][i])
   #y = np.exp(- g * np.log(l) - x/l - sp.special.gammaln(g) + (g-1.0)*np.log(x) )
   return np.exp(Lgkj + Lrkj*xi + Gdj*lxi)
 
@@ -468,7 +468,7 @@ class qmodl:
     if _pmat is None: _pmat = False
     self.pmat = _pmat
     _n = np.array(numspace(self.nlims[0], self.nlims[1], self.nres, int(self.ngeo == 2)), dtype = int)
-    self.Pr = prob.mass(self.pmat)
+    self.Pr = discprob.mass(self.pmat)
     self.Pr.setx([self.mres, self.nres, self.ares, self.vres, self.sres], [0, 0, 1, 1, -2], self.mn, _n,
         self.alims, self.vlims, self.slims)
 
@@ -517,7 +517,7 @@ class qmodl:
     for i in range(self.nres):
       _Gi = np.array(self.GI[i]) if self.pmat else self.GI[i]
       _Gd = _Gi - 1.
-      _Gl = prob.glnf(_Gi)
+      _Gl = discprob.glnf(_Gi)
       self.Gi[i] = np.tile(_Gi.reshape((1, self.gres, 1, self.n[i])), (self.ares, 1, self.sres, 1))
       self.Gd[i] = np.tile(_Gd.reshape((1, self.gres, 1, self.n[i])), (self.ares, 1, self.sres, 1))
       self.Gl[i] = np.tile(_Gl.reshape((1, self.gres, 1, self.n[i])), (self.ares, 1, self.sres, 1))
@@ -553,7 +553,7 @@ class qmodl:
       self.A = np.tile(self.a.reshape(self.ares, 1), (1, self.sres))
       self.S = np.tile(self.s.reshape(1, self.sres), (self.ares, 1))
       self.B = self.A/self.S - self.A
-      self.C = prob.betanompmf(self.n, self.A, self.B, _pgb)
+      self.C = discprob.betanompmf(self.n, self.A, self.B, _pgb)
       for i in range(self.nres):
         self.Ci[i] = np.tile(self.C[i].reshape((self.ares, 1, self.sres, self.ires[i])), (1, self.vres, 1, 1))
         self.Cf[i], self.Cs[i] = self.Ci[i][:, :, :, 0], self.Ci[i][:, :, :, 1:]
@@ -629,7 +629,7 @@ class qmodl:
       self.preFetchSerial(pgb)
       self.calcPostsSerial(pgb)
     self.PP = np.array(self.PP).reshape(self.Pr.nX)
-    self.P = prob.mass(self.PP, self.Pr.X, self.pmat)
+    self.P = discprob.mass(self.PP, self.Pr.X, self.pmat)
     self.PMNAVS = self.P.copy()
     self.calcCondPosts(pgb)
     self.calcJointPost()
@@ -652,7 +652,7 @@ class qmodl:
           if x <= 0.:
             self.Gm[k][j][i] = self.Z0[i]
           else:
-            #Gm = prob.gampdf(x, self.Gi[i], self.Ls[k][i])
+            #Gm = discprob.gampdf(x, self.Gi[i], self.Ls[k][i])
             #y = np.exp(- g * np.log(l) - x/l - sp.special.gammaln(g) + (g-1.0)*np.log(x) )
             self.Gm[k][j][i] = np.exp(self.Lg[k][i] + x*self.Lr[k][i] + self.Gd[i] * np.log(x))
     if pgb is not None: pgb.reset()
@@ -718,7 +718,7 @@ class qmodl:
               self.Gm[k][j][i] = self.Z0[j]
             else:
               lxi = np.log(xi)
-              #Gm = prob.gampdf(x, self.Gi[i], self.Ls[k][i])
+              #Gm = discprob.gampdf(x, self.Gi[i], self.Ls[k][i])
               #y = np.exp(- g * np.log(l) - x/l - sp.special.gammaln(g) + (g-1.0)*np.log(x) )
               self.Gm[k][j][i] = np.exp(Lgkj + Lrkj*xi + Gdj*lxi)
         else:
@@ -775,10 +775,10 @@ class qmodl:
     PMP = np.zeros(self.mres, dtype = float)
     for i in range(self.mres):
       for j in range(self.mres):
-        PMP[i] += prob.zpdf(self.mn[i], self.mn[j], self.se[j]**2.)
+        PMP[i] += discprob.zpdf(self.mn[i], self.mn[j], self.se[j]**2.)
     PMP /= unzero(PMP.sum())
-    self.PM = prob.mass(PMP, [self.mn])
-    self.PMRQGA = prob.mass(self.pmat)
+    self.PM = discprob.mass(PMP, [self.mn])
+    self.PMRQGA = discprob.mass(self.pmat)
     self.PMRQGA.setx([self.mres, self.rres, self.qres, self.gres, self.ares], [0, 1, 1, 0, 0], self.mn, self.rlims,
         self.qlims, self.g, self.a)
     self.PMRQGA.setUniPrior()
@@ -829,7 +829,7 @@ class qmodl:
     self.PV = self.PG.copy()
     self.PV.setX([1./np.sqrt(self.PG.X[0])])
 
-    self.PN = prob.mass(self.pmat)
+    self.PN = discprob.mass(self.pmat)
     self.PN.setX([self.n])
     self.PN.setUniPrior()
     lh = self.PRQGA.copy()
@@ -837,11 +837,11 @@ class qmodl:
     self.PN.calcPost(lh, lhN)
     self.PN.normalise()
 
-    self.PMS = prob.mass(self.pmat)
+    self.PMS = discprob.mass(self.pmat)
     self.PMS.setx([self.mres, self.sres], [0, 0], self.mn, self.s)
     self.PMS.setUniPrior()
     for i in range(self.mres):
-      pr = prob.mass(self.PMS.P[i, :], self.PMS.X[1], self.pmat)
+      pr = discprob.mass(self.PMS.P[i, :], self.PMS.X[1], self.pmat)
       lhr = np.fabs(self.mn[i] / (self.PR.X[0])+mino)
       if self.pmat: lhr = np.matrix(lhr)
       pr.calcPost(self.PR, lhr)

@@ -1,3 +1,3 @@
 #!/bin/sh
-python2 pyclampmain.py
+python3 pyclampmain.py
 

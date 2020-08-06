@@ -220,7 +220,7 @@ def extnotnan(X):
 
 
 def listmat(nr, nc):
-  x = range(nr*nc)
+  x = list(range(nr*nc))
   y = []
   for i in range(nr):
     y.append(x[i*nc:(i+1)*nc])

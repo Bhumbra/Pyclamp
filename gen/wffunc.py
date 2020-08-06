@@ -380,7 +380,7 @@ def binomate(_x):
   n -= m
   if n < 1: return x[:0]
   x = _x[:n]
-  r = n / 4
+  r = int(n / 4)
   X = x.reshape((r, 4))
   x0, x1 = X.min(axis=1), X.max(axis=1)
   x0, x1 = x0.reshape((r, 1)), x1.reshape((r, 1))

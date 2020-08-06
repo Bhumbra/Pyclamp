@@ -29,7 +29,7 @@ class ABF(abfread.ABF):
         return np.array('f')
     if self.IntData is None:
         self.ReadIntData()
-    self.ADCData = np.empty( (self.nChannels, self.nEpisodes, self.nSamples), dtype = float)
+    self.ADCData = np.empty( (self.nChannels, self.nEpisodes, self.nSamples), dtype= float)
     for i in range(self.nChannels):
         self.ADCData[i,:,:] = self.gain[i] * self.IntData[i] + self.offset[i]
     return self.ADCData    
@@ -38,8 +38,8 @@ class ABF(abfread.ABF):
     for i in range(self.nChannels):
       chans[i] = channel.chWave()    
       chans[i].index = i            
-      chans[i].name = self.name[i]
-      chans[i].units = self.units[i]
+      chans[i].name = self.name[i] if isinstance(self.name[i], str) else self.name[i].decode('ascii')
+      chans[i].units = self.units[i] if isinstance(self.units[i], str) else self.units[i].decode('ascii')
       chans[i].samplint = self.samplint
       chans[i].gain = self.gain[i]
       chans[i].offset = self.offset[i]

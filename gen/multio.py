@@ -105,7 +105,7 @@ class filio:
       self.extn = self.defextn
     self.parseStem()
   def parseStem(self):
-    if not(self.ioks.Delimiter.has_key(self.extn)): # If file extension not recognised
+    if self.extn not in self.ioks.Delimiter: # If file extension not recognised
       self.dstr = None
       self.stpf = None
       self.stsd = None
@@ -160,7 +160,7 @@ class filio:
     self.readddim() # read dimensions
     self.readchan() # read channel info
     nsamp = min(nsamp, self.ns)
-    self.ncp = (self.nc) / 2
+    self.ncp = int((self.nc) / 2)
     self.ncp += not(self.ncp)
     if self.nc == 1: # handle exception first
       self.chpa = [[0, 0]]

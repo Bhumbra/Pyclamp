@@ -3,7 +3,7 @@
 import numpy as np
 import scipy as sp
 import scipy.stats as stats
-import prob
+import discprob
 from qmod import *
 from optfunc import *
 from fpfunc import *
@@ -173,7 +173,7 @@ class betaqsim (binoqsim):
       if not(_S is None):
         c = (np.arange(self.n, dtype = float)+0.5)/(float(self.n))
         b = self.a * (1.0 / (S[i]) - 1.0)
-        si = prob.betasample(self.n, self.a, b, True)       
+        si = discprob.betasample(self.n, self.a, b, True)       
         si.sort()  
         self.Si[i, :] = si.copy()
         self.setnquvs(self.n, self.q, self.u, self.v, si, self.usegamma)
