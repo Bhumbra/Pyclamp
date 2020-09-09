@@ -1,0 +1,21 @@
+\expandafter\ifx\csname doTocEntry\endcsname\relax \expandafter\endinput\fi 
+\doTocEntry\tocsection{1}{\csname a:TocLink\endcsname{2}{x2-10001}{QQ2-2-1}{Installation}}{2}\relax 
+\doTocEntry\tocsection{2}{\csname a:TocLink\endcsname{3}{x3-20002}{QQ2-3-2}{Waveform data analysis}}{7}\relax 
+\doTocEntry\tocsubsection{2.1}{\csname a:TocLink\endcsname{4}{x4-30002.1}{QQ2-4-3}{Importing data}}{7}\relax 
+\doTocEntry\tocsubsection{2.2}{\csname a:TocLink\endcsname{5}{x5-40002.2}{QQ2-5-4}{Waveform navigation}}{9}\relax 
+\doTocEntry\tocsubsection{2.3}{\csname a:TocLink\endcsname{6}{x6-50002.3}{QQ2-6-5}{Restore}}{12}\relax 
+\doTocEntry\tocsubsection{2.4}{\csname a:TocLink\endcsname{7}{x7-60002.4}{QQ2-7-6}{Trim}}{13}\relax 
+\doTocEntry\tocsubsection{2.5}{\csname a:TocLink\endcsname{8}{x8-70002.5}{QQ2-8-7}{Filter}}{14}\relax 
+\doTocEntry\tocsubsection{2.6}{\csname a:TocLink\endcsname{9}{x9-80002.6}{QQ2-9-8}{Trigger}}{15}\relax 
+\doTocEntry\tocsubsection{2.7}{\csname a:TocLink\endcsname{10}{x10-90002.7}{QQ2-10-9}{Align}}{16}\relax 
+\doTocEntry\tocsubsection{2.8}{\csname a:TocLink\endcsname{11}{x11-100002.8}{QQ2-11-10}{Baseline}}{17}\relax 
+\doTocEntry\tocsubsection{2.9}{\csname a:TocLink\endcsname{12}{x12-110002.9}{QQ2-12-11}{Selection}}{18}\relax 
+\doTocEntry\tocsubsection{2.10}{\csname a:TocLink\endcsname{13}{x13-120002.10}{QQ2-13-12}{Analysis}}{20}\relax 
+\doTocEntry\tocsection{3}{\csname a:TocLink\endcsname{14}{x14-130003}{QQ2-14-13}{Quantal analysis}}{23}\relax 
+\doTocEntry\tocsubsection{3.1}{\csname a:TocLink\endcsname{15}{x15-140003.1}{QQ2-15-14}{Importing data}}{23}\relax 
+\doTocEntry\tocsubsection{3.2}{\csname a:TocLink\endcsname{16}{x16-150003.2}{QQ2-16-15}{Enter baseline noise}}{24}\relax 
+\doTocEntry\tocsubsection{3.3}{\csname a:TocLink\endcsname{17}{x17-160003.3}{QQ2-17-16}{Variance mean plot}}{25}\relax 
+\doTocEntry\tocsubsection{3.4}{\csname a:TocLink\endcsname{18}{x18-170003.4}{QQ2-18-17}{Running quantal analysis}}{26}\relax 
+\doTocEntry\tocsubsection{3.5}{\csname a:TocLink\endcsname{19}{x19-180003.5}{QQ2-19-18}{Quantal analysis results}}{28}\relax 
+\doTocEntry\tocsection{4}{\csname a:TocLink\endcsname{20}{x20-190004}{QQ2-20-19}{Disclaimer}}{30}\relax 
+\par 

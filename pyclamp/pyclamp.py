@@ -3,17 +3,11 @@ DEVMODE = True # Set to `False' for excluding the corrupting effects of bug-ridd
 import sys
 import os
 CWDIR = os.getcwd()
-GENDIR = '../gen/'
-QADIR = '../quantal/'
 MANDIR = 'man'
 MANPREF = "pyclamp"
 MANSUFF = ".html"
 MANHELP = [""] 
-USEMP = False # flag to use use multiprocessing
 DEFAULT_TDF_EXTENSION = ".tdf"
- 
-sys.path.append(GENDIR)
-sys.path.append(QADIR)
 
 import gc
 import webbrowser
@@ -40,9 +34,6 @@ from fpfunc import *
 from strfunc import *
 from tdf import *
 from tpfunc import *
-
-if USEMP:
-  import multiprocessing as mp
 
 def main():                  # OS entry point 
   return PyClamp()  
@@ -136,7 +127,6 @@ def mpmfilioGUI(q):
   q.put(mio.mfilioGUI())
 
 class pyclamp:              # back-end
-  usemp = USEMP
   _Data = None
   mfi = None
   P = None
@@ -240,13 +230,7 @@ class pyclamp:              # back-end
   def readIntData(self):
     if self.DataDir is None or self.NumDataFiles == 0: return
     if self.nChan == 0 or self.SiGnOf is None: return
-    if self.usemp:
-      self.Q = mp.Queue()
-      self.P = mp.Process(target=mpmfilio, args=(self.Q,))
-      self.P.start()
-      self.mfi = self.Q.get()
-    else:
-      self.mfi = mio.mfilio()
+    self.mfi = mio.mfilio()
     self.mfi.readData(self.DataFiles, self.Channels, self.DataDir)
     self.IntData = self.mfi.Data
     self.Onsets = np.copy(self.mfi.Onsets)
@@ -850,13 +834,7 @@ class Pyclamp (pyclamp): # front end
     if self.Form is None: return
     self.Form.close()
   def readData(self):
-    if self.usemp:
-      self.Q = mp.Queue()
-      self.P = mp.Process(target=mpmfilioGUI, args=(self.Q,))
-      self.P.start()
-      self.Dlg = self.Q.get()
-    else:
-      self.Dlg = mio.mfilioGUI()
+    self.Dlg = mio.mfilioGUI()
     self.Dlg.Open(self.readDataOK, self.readDataCC)
   def readDataOK(self, event = None):
     dlgIP = self.Dlg.CloseDlg(1)    

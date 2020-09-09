@@ -1,5 +1,5 @@
-import pyclamp
 import sys
+from pyclamp.pyclamp import pyclamp
 
 if __name__ == '__main__':
   self = pyclamp.main()

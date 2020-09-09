@@ -1,0 +1,94 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"  
+  "http://www.w3.org/TR/html4/loose.dtd">  
+<html > 
+<head><title></title> 
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1"> 
+<meta name="generator" content="TeX4ht (http://www.cse.ohio-state.edu/~gurari/TeX4ht/)"> 
+<meta name="originator" content="TeX4ht (http://www.cse.ohio-state.edu/~gurari/TeX4ht/)"> 
+<!-- html,3,next --> 
+<meta name="src" content="pyclamp.tex"> 
+<meta name="date" content="2015-10-19 01:52:00"> 
+<link rel="stylesheet" type="text/css" href="pyclamp.css"> 
+</head><body 
+>
+<!--l. 11--><p class="noindent" >Welcome to Pyclamp! This is an pre-Alpha (development) version, and note that
+presently this manual is incomplete and under revision. Pyclamp is Python package
+used to extract and analyse electrophysiological data. A graphical user interface has
+been developed to allow a user to run the package without requiring any knowledge
+of Python code. Presently, Pyclamp is designed to perform very specific forms of
+analysis on evoked synaptic responses:
+     <dl class="description"><dt class="description">
+<span 
+class="cmbx-10">Waveform analysis</span> </dt><dd 
+class="description">: This is a highly user-interactive environment that can
+     be  used  to  discriminate  synaptic  events,  obtain  various  measures  of
+     their  kinetics  and  size,  and  output  the  results.  The  most  pertitinent
+     measurements exported are MWD (Mean Windowed Discursion) values
+     that can be used for quantal analysis.
+     </dd><dt class="description">
+<span 
+class="cmbx-10">Quantal analysis</span> </dt><dd 
+class="description">:   This   part   of   the   package   performs   both   simple
+     variance-mean  analysis  and  Bayesian  quantal  analysis  to  estimate  the
+     quantal size and number of release sites amongs other measures. It can
+     be used in isolation or in conjuction with the waveform analysis described
+     above.</dd></dl>
+<!--l. 25--><p class="indent" >   When Pyclamp is started, you can access the &#8216;File menu&#8217; to choose to open to a
+data (i.e. ADC waveform) or analysis (<span 
+class="cmti-10">i.e. </span>quantal analysis file); for convenience you
+can also open a &#8216;results file&#8217;, which can be used to reload a saved quantal analysis
+without having re-run the number-crunching. While the quantal analysis
+component can read the output files generated the waveform analysis, it can
+also read other tabular and spreadsheet file types. Consequently, the use
+of the waveform analysis component is not essential to perform quantal
+analysis.
+   <div class="tableofcontents">
+   <span class="sectionToc" >1 <a 
+href="pyclampse1.html#x2-10001" id="QQ2-2-1">Installation</a></span>
+<br />   <span class="sectionToc" >2 <a 
+href="pyclampse2.html#x3-20002" id="QQ2-3-2">Waveform data analysis</a></span>
+<br />   &#x00A0;<span class="subsectionToc" >2.1 <a 
+href="pyclampsu1.html#x4-30002.1" id="QQ2-4-3">Importing data</a></span>
+<br />   &#x00A0;<span class="subsectionToc" >2.2 <a 
+href="pyclampsu2.html#x5-40002.2" id="QQ2-5-4">Waveform navigation</a></span>
+<br />   &#x00A0;<span class="subsectionToc" >2.3 <a 
+href="pyclampsu3.html#x6-50002.3" id="QQ2-6-5">Restore</a></span>
+<br />   &#x00A0;<span class="subsectionToc" >2.4 <a 
+href="pyclampsu4.html#x7-60002.4" id="QQ2-7-6">Trim</a></span>
+<br />   &#x00A0;<span class="subsectionToc" >2.5 <a 
+href="pyclampsu5.html#x8-70002.5" id="QQ2-8-7">Filter</a></span>
+<br />   &#x00A0;<span class="subsectionToc" >2.6 <a 
+href="pyclampsu6.html#x9-80002.6" id="QQ2-9-8">Trigger</a></span>
+<br />   &#x00A0;<span class="subsectionToc" >2.7 <a 
+href="pyclampsu7.html#x10-90002.7" id="QQ2-10-9">Align</a></span>
+<br />   &#x00A0;<span class="subsectionToc" >2.8 <a 
+href="pyclampsu8.html#x11-100002.8" id="QQ2-11-10">Baseline</a></span>
+<br />   &#x00A0;<span class="subsectionToc" >2.9 <a 
+href="pyclampsu9.html#x12-110002.9" id="QQ2-12-11">Selection</a></span>
+<br />   &#x00A0;<span class="subsectionToc" >2.10 <a 
+href="pyclampsu10.html#x13-120002.10" id="QQ2-13-12">Analysis</a></span>
+<br />   <span class="sectionToc" >3 <a 
+href="pyclampse3.html#x14-130003" id="QQ2-14-13">Quantal analysis</a></span>
+
+<br />   &#x00A0;<span class="subsectionToc" >3.1 <a 
+href="pyclampsu11.html#x15-140003.1" id="QQ2-15-14">Importing data</a></span>
+<br />   &#x00A0;<span class="subsectionToc" >3.2 <a 
+href="pyclampsu12.html#x16-150003.2" id="QQ2-16-15">Enter baseline noise</a></span>
+<br />   &#x00A0;<span class="subsectionToc" >3.3 <a 
+href="pyclampsu13.html#x17-160003.3" id="QQ2-17-16">Variance mean plot</a></span>
+<br />   &#x00A0;<span class="subsectionToc" >3.4 <a 
+href="pyclampsu14.html#x18-170003.4" id="QQ2-18-17">Running quantal analysis</a></span>
+<br />   &#x00A0;<span class="subsectionToc" >3.5 <a 
+href="pyclampsu15.html#x19-180003.5" id="QQ2-19-18">Quantal analysis results</a></span>
+<br />   <span class="sectionToc" >4 <a 
+href="pyclampse4.html#x20-190004" id="QQ2-20-19">Disclaimer</a></span>
+   </div>
+
+
+
+<!--l. 470--><p class="noindent" ><span class="next">[<a 
+href="pyclampse1.html" id="tailpyclamp" >next</a>]</span> 
+</body></html> 
+
+
+

@@ -1,0 +1,19 @@
+ #!/bin/bash
+
+baseline_noise_standard_deviation=2.5
+resolution_for_probability_of_release=128
+resolution_for_coefficent_of_variation=96
+resolution_for_heterogenous_model_alpha=1
+resolution_for_number_of_release_sites=64
+maximum_number_of_release_sites=190
+reciprocal_prior_for_number_of_release_sites=1
+
+python2 ~/.code/python/quantal/bqamain.py \
+$baseline_noise_standard_deviation \
+$resolution_for_probability_of_release \
+$resolution_for_coefficent_of_variation \
+$resolution_for_heterogenous_model_alpha \
+$resolution_for_number_of_release_sites \
+$maximum_number_of_release_sites \
+$reciprocal_prior_for_number_of_release_sites \
+

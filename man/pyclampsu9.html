@@ -1,0 +1,111 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"  
+  "http://www.w3.org/TR/html4/loose.dtd">  
+<html > 
+<head><title>Selection</title> 
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1"> 
+<meta name="generator" content="TeX4ht (http://www.cse.ohio-state.edu/~gurari/TeX4ht/)"> 
+<meta name="originator" content="TeX4ht (http://www.cse.ohio-state.edu/~gurari/TeX4ht/)"> 
+<!-- html,3,next --> 
+<meta name="src" content="pyclamp.tex"> 
+<meta name="date" content="2015-10-19 01:52:00"> 
+<link rel="stylesheet" type="text/css" href="pyclamp.css"> 
+</head><body 
+>
+   <!--l. 244--><div class="crosslinks"><p class="noindent">[<a 
+href="pyclampsu10.html" >next</a>] [<a 
+href="pyclampsu8.html" >prev</a>] [<a 
+href="pyclampsu8.html#tailpyclampsu8.html" >prev-tail</a>] [<a 
+href="#tailpyclampsu9.html">tail</a>] [<a 
+href="pyclampse2.html#pyclampsu9.html" >up</a>] </p></div>
+   <h4 class="subsectionHead"><span class="titlemark">2.9   </span> <a 
+ id="x12-110002.9"></a>Selection</h4>
+<!--l. 246--><p class="noindent" >The above functions are provided (with other more experimental ones) in the
+&#8216;Process&#8217; menu. The &#8216;Selection&#8217; menu is useful for selecting individual events that can
+be marked for &#8216;deletion&#8217; to remove unwanted events or set to &#8216;active&#8217; or &#8216;inactive&#8217;, for
+example if you to flag events as being &#8216;successes&#8217; as distinct from &#8216;failure&#8217; when it
+comes to outputting tabulated results. More sophisticated methods of selection are
+provided by a subapplication that can discriminate in 2 or 6 dimesions. The
+subapplication is still very much in its infancy. While it is far from completed, you
+can make use of some of its functionality. The discriminator is a descendent of
+similar programs designed to isolate action potentials called SpikeLab and
+LabSpike (for details see Bhumbra, Inyushkin, and Dyball (2004) J. Neuroendo.
+16:390-397)
+<!--l. 255--><p class="indent" >   From the dialogue box, you have to select the channel you wish to use for
+discrimination. Using two left mouse clicks to position vertical cursors, you must
+specify the region of the episodes to be used for the purposes of discrimination.
+Pyclamp will then calculate a number of parameters that characterise the
+waveform shape in the specified window of each episode for the selected channel.
+Depending on the amount of data, these parameters may take some time to
+evaluate.
+<!--l. 260--><p class="indent" >   After the shape parameters are calculated, you will be presented with either one
+or three scatter plots on two waveform plots. In the case of a single plot, you simply
+discriminate using the ellipse with each episode represented as a dot. Each
+ellipsesand be moved by its edges or reshaped by dragging one of the two
+anchors on their major or minor axes. By manouvring the ellipses, you can
+&#8216;cluster-cut&#8217; signal from noise. Right-clicking an ellipse restores it to its original
+position.
+<!--l. 266--><p class="indent" >   For 6D discrimination, dots are coloured-coded according to whether they lie
+inside or outside the three ellipses. The inside/outside colouring can be reversed by
+clicking the middle-mouse button for the relevant display. Dots are coloured logically
+according to the Boolean logic for all three ellipses:
+<!--l. 270--><p class="indent" >
+     <dl class="description"><dt class="description">
+<span 
+class="cmbx-10">Red</span> </dt><dd 
+class="description">: Red only.
+     </dd><dt class="description">
+<span 
+class="cmbx-10">Green</span> </dt><dd 
+class="description">: Green only.
+     </dd><dt class="description">
+<span 
+class="cmbx-10">Blue</span> </dt><dd 
+class="description">: Blue only.
+
+     </dd><dt class="description">
+<span 
+class="cmbx-10">Magenta</span> </dt><dd 
+class="description">: Red and blue only.
+     </dd><dt class="description">
+<span 
+class="cmbx-10">Yellow</span> </dt><dd 
+class="description">: Red and green only.
+     </dd><dt class="description">
+<span 
+class="cmbx-10">Cyan</span> </dt><dd 
+class="description">: Green and blue only.
+     </dd><dt class="description">
+<span 
+class="cmbx-10">White</span> </dt><dd 
+class="description">: Red, green, and blue.
+     </dd><dt class="description">
+<span 
+class="cmbx-10">Grey</span> </dt><dd 
+class="description">: None.</dd></dl>
+<!--l. 281--><p class="indent" >   Note that individual dots can selected and the corresponding trace is shown in the
+bottom left panel. Below this panel are buttons that indicate the numbers of dots
+correspond to each colour. All traces corresponding to a given colour can be
+overlayed by clicking on the button of the appropriate colour in the button panel
+below. Note that the episodes can be deleted or undeleted by pressing the &#8216;delete&#8217; or
+&#8216;insert&#8217; button respectively.
+<!--l. 286--><p class="indent" >   The panel in the bottom right overlays &#8216;accepted&#8217; traces according whether a
+given colour is &#8216;On&#8217; or &#8216;Off&#8217;. You can toggle the accept-state of a colour by clicking
+on the button of the appropriate colour in the button panel below. Note that in
+addition to the accepted traces, the selected traces shown in left panel are also
+overlayed on the right except in a highlighted colour. Finally, the total number
+of accepted traces is shown on the bottom right button and you can click
+here to complete the discrimination. Note that any episodes deleted in the
+discrimination window are deleted irreversibly once you leave this screen.
+The only way the deleted episodes can be returned to the data set is by
+clicking on &#8216;Restore&#8217;, but this will also lose any discrimination you have
+performed.
+
+   <!--l. 294--><div class="crosslinks"><p class="noindent">[<a 
+href="pyclampsu10.html" >next</a>] [<a 
+href="pyclampsu8.html" >prev</a>] [<a 
+href="pyclampsu8.html#tailpyclampsu8.html" >prev-tail</a>] [<a 
+href="pyclampsu9.html" >front</a>] [<a 
+href="pyclampse2.html#pyclampsu9.html" >up</a>] </p></div>
+<!--l. 294--><p class="indent" >   <a 
+ id="tailpyclampsu9.html"></a>  
+</body></html> 
