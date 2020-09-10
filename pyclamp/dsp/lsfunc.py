@@ -1,7 +1,7 @@
 import numpy as np
 import os
-from strfunc import *
-from dtypes import *
+from pyclamp.dsp.strfunc import *
+from pyclamp.dsp.dtypes import *
 
 def listcurdir():
   return os.listdir(os.curdir)

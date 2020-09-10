@@ -1,9 +1,9 @@
 import numpy as np
 import warnings
-from lsfunc import *
-from dtypes import *
-from cstats import *
-from sifunc import *
+from pyclamp.dsp.lsfunc import *
+from pyclamp.dsp.dtypes import *
+from pyclamp.dsp.cstats import *
+from pyclamp.dsp.sifunc import *
 from numpy.core.umath_tests import inner1d
 import scipy.signal as signal
 import scipy.special as special

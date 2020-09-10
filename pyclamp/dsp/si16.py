@@ -1,5 +1,5 @@
 import numpy as np
-import channel
+from pyclamp.dsp.channel import *
 
 def si16read(fn, datatype = 'h'):
   f = open(fn, 'rb')
@@ -50,7 +50,7 @@ class SI16: # a fairly primitive short-data binary type reader
   def ReadChannelInfo(self):
     chans = [[]] * self.nChan
     for i in range(self.nChan):
-      chans[i] = channel.chWave()    
+      chans[i] = chWave()    
       chans[i].index = i            
       chans[i].name = self.name[i]
       chans[i].units = self.units[i]

@@ -1,7 +1,7 @@
-from iofunc import *
-from lsfunc import *
 import os
-import channel
+from pyclamp.dsp.iofunc import *
+from pyclamp.dsp.lsfunc import *
+from pyclamp.dsp.channel import chWave
 
 class TDF:
   readFunc = {'.tab':readDTFile, '.tdf':readDTFile, '.tsv':readSVFile}
@@ -65,7 +65,7 @@ class TDF:
     h = -1
     for i in self.io:
       h += 1
-      self.Chan[h] = channel.chWave()
+      self.Chan[h] = chWave()
       chan = self.Chan[h]
       chan.index = h
       chan.name = 'Channel ' + str(h)
@@ -154,7 +154,7 @@ class TDF:
   def retChannels(self):
     return self.Chan
   def setChan(self, _chan = None):    
-    chan_ = channel.chWave()
+    chan_ = chWave()
     chan_.index = 0
     chan_.name = '' 
     chan_.units = ''   
@@ -181,7 +181,7 @@ class TDF:
           chan_.offset = _chan[2]
         else:
           raise ValueError("pywave: channel info lists must contain numeric data only.")
-    elif isinstance(_chan, channel.chWave):
+    elif isinstance(_chan, chWave):
       chan_.index = _chan.index
       chan_.name = _chan.name
       chan_.units = _chan.units

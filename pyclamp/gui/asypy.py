@@ -1,5 +1,5 @@
 import pyasy.asymptote
-from iofunc import *
+from pyclamp.dsp.iofunc import *
 
 class asypy:
   asy = None

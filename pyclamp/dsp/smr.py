@@ -3,13 +3,13 @@
 # Gary Bhumbra
 
 import numpy as np
-import smrread
-import channel
+from pyclamp.dsp.smrread import SMR
+from pyclamp.dsp.channel import chWave
 
 SMR_CHANNEL_SELECT_RULE = None # None = Auto, True = By max. number of episode, False = By max number of samples
 # If Auto - it's based on extension capitalisation!
 
-class SMR(smrread.SMR):
+class SMR(SMR):
   IntData = None
   ADCData = None
   nChan = 0
@@ -62,7 +62,7 @@ class SMR(smrread.SMR):
   def ReadChannelInfo(self):
     chans = [[]] * self.nChan
     for i in range(self.nChan):
-      chans[i] = channel.chWave()    
+      chans[i] = chWave()    
       chans[i].index = i # self.index[i]      
       chans[i].name = self.channelHeaders[self.index[i]].title
       chans[i].units = self.channelHeaders[self.index[i]].units

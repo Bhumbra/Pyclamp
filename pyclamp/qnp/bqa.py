@@ -4,8 +4,8 @@
 import sys
 import os
 import webbrowser
+import time
 import matplotlib as mpl
-from iplot import *
 import numpy as np
 import scipy as sp
 import scipy.stats as stats
@@ -15,16 +15,17 @@ import matplotlib as mpl
 import matplotlib.pyplot as mp
 import matplotlib.ticker as mt
 import matplotlib.pyplot as mp
-from fpfunc import *
-import lbwgui as lbw
-from iofunc import *
-from fpfunc import *
-from dtypes import *
-from lsfunc import *
-from fpfunc import *
-from iofunc import *
-import discprob
-import time
+
+from pyclamp.dsp.fpfunc import *
+import pyclamp.gui.lbwgui as lbw
+from pyclamp.dsp.iofunc import *
+from pyclamp.dsp.fpfunc import *
+from pyclamp.dsp.dtypes import *
+from pyclamp.dsp.lsfunc import *
+from pyclamp.dsp.fpfunc import *
+from pyclamp.dsp.iofunc import *
+from pyclamp.dsp.iplot import *
+import pyclamp.dsp.discprob as discprob
 
 CWDIR = os.getcwd()
 MANDIR = CWDIR + '/../pyclamp/man/'

@@ -7,7 +7,6 @@ import scipy.special as special
 DEFAULT_LD = 0.05
 EPSILON_FP = 1e-300
 
-
 #-----------------------------------------------------------------------------------------------------------------------
 def ksd(X, *args, **kwds): # Kolmogorov-Smirnov distances (sorted, not max)
   Y = np.sort(X, *args, **kwds)

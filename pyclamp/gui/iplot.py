@@ -2,6 +2,8 @@
 
 import os
 import sys
+from time import time
+import numpy as np
 import matplotlib as mpl
 #'''
 if mpl.get_backend() != 'Qt4Agg':
@@ -11,11 +13,9 @@ if mpl.get_backend() != 'Qt4Agg':
 import matplotlib.pyplot as mp
 import matplotlib.widgets as mw
 from matplotlib.patches import Rectangle
-import numpy as np
-from lsfunc import *
-from time import time
+from pyclamp.dsp.lsfunc import *
 from mpl_toolkits.mplot3d import Axes3D
-from fpfunc import *
+from pyclamp.dsp.fpfunc import *
 
 DISPLAY = "DISPLAY"
 

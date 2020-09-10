@@ -1,9 +1,9 @@
 # A Module to colate means from data formatted for quantal analysis
 
-from iofunc import *
-from qmod import *
-from fpfunc import *
-from lsfunc import *
+from pyclamp.dsp.iofunc import *
+from pyclamp.qnp.qmod import *
+from pyclamp.dsp.fpfunc import *
+from pyclamp.dsp.lsfunc import *
 
 # PARAMETERS
 

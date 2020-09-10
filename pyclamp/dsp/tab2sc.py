@@ -1,4 +1,4 @@
-#!/usr/bin/pythonx
+#!/usr/bin/python3
 '''
 Changing the call
 to string.atol() to string.atof() and changing

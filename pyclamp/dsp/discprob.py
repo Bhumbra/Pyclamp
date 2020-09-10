@@ -3,10 +3,10 @@
 import numpy as np
 import scipy as sp
 import scipy.stats as stats
-from fpfunc import *
-from sifunc import *
-from lsfunc import *
 import warnings
+from pyclamp.dsp.fpfunc import *
+from pyclamp.dsp.sifunc import *
+from pyclamp.dsp.lsfunc import *
 
 DEFPMAT = False
 npmatrix=np.matrixlib.defmatrix.matrix

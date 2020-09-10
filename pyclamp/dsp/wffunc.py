@@ -3,12 +3,11 @@
 import numpy
 import numpy as np
 import scipy as sp
-import sifunc
-import fpfunc
-from dtypes import *
-from lsfunc import *
-from fpfunc import *
-from optfunc import *
+from pyclamp.dsp.sifunc import *
+from pyclamp.dsp.fpfunc import *
+from pyclamp.dsp.dtypes import *
+from pyclamp.dsp.lsfunc import *
+from pyclamp.dsp.optfunc import *
 
 SHOWFITS = False
 if SHOWFITS: 
@@ -18,7 +17,7 @@ if SHOWFITS:
 def wavmatplot(X, samplint, colours = 'bgrcmy'):
   t = np.arange(X.shape[1], dtype = float) * samplint
   mn = np.mean(X, axis = 0)
-  se = fpfunc.stderr(X, axis = 0)
+  se = stderr(X, axis = 0)
   sd = np.std(X, axis = 0)
   q0 = np.min(X, axis = 0)
   q1 = np.percentile(X, 25, axis = 0)
@@ -114,7 +113,7 @@ def align(X, spec = 1, window = None):
   spec = spec[ok, :]
   wind = np.matrix(np.arange(window[0], window[1])) + np.matrix(spec)[:, 1]
   vind = np.tile(spec[:, 0].reshape(len(spec), 1), (1, wind.shape[1]))
-  I = vind, wind
+  I = np.array(vind, dtype=int), np.array(wind, dtype=int)
   Y = X[I[0], I[1]]
   return Y, I, spec
 
@@ -662,7 +661,7 @@ class minmax2: # performs decimation-in-time min-max operations on multi-episode
           j1 = int(max(0, min(float(self.ns-1), round(np.ceil(xr[1]/self.si)))))
           j1 = max(j1, j0+1)
           xj = np.array(self.x, copy=False)[:,j0:j1]
-          xj[boolko, :] = sifunc.MAXSI
+          xj[boolko, :] = MAXSI
           minx, maxx = xj.min(axis=1), xj.max(axis=1)
           ok = np.logical_and(maxx >= yr[0], minx <= yr[1])
         i = argtrue(np.logical_and(ok, boolok))
@@ -676,7 +675,7 @@ class minmax2: # performs decimation-in-time min-max operations on multi-episode
     y_ =  (_y - self.of) / unzero(self.gn)
     j = int(max(0, min(float(self.ns-1), round(_x/self.si))))
     xj = np.array(self.x, copy=False)[:,j]
-    xj[boolko] = sifunc.MAXSI
+    xj[boolko] = MAXSI
     return argminfabs(xj - y_)
 
 def analyseInflection(w, _i0 = 0, _i1 = None, _polyn = 6, trimlim = np.inf):
@@ -701,9 +700,9 @@ def analyseInflection(w, _i0 = 0, _i1 = None, _polyn = 6, trimlim = np.inf):
     w01mxmd = np.max(w01) - wmd
     w01mnmd = wmd - np.min(w01)
     if w01mxmd > w01mnmd: # a peak
-      ii = sifunc.longest(w01 > wmd + wiq*1.5) 
+      ii = longest(w01 > wmd + wiq*1.5) 
     else: # a trough
-      ii = sifunc.longest(w01 < wmd - wiq*1.5)          
+      ii = longest(w01 < wmd - wiq*1.5)          
     if len(ii) > polyn2: # only trim if it is really worthwhile  
       i1 = ii[-1] + i0 #obviously needs to be this way round 
       i0 += ii[0]

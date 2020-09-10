@@ -1,15 +1,13 @@
-import wffunc as wf
+import numpy as np
 import pyqtgraph as pg
 from pyqtgraph.Qt import QtGui, QtCore
-import pyqtplot as pq
-from lsfunc import *
-from fpfunc import *
-from xyfunc import *
-from pyplot import *
-from pydisc import *
-from fpanal import *
-import channel
-import numpy as np
+import pyclamp.gui.pyqtplot as pq
+from pyclamp.dsp.lsfunc import *
+from pyclamp.dsp.fpfunc import *
+from pyclamp.dsp.fpanal import *
+from pyclamp.gui.xyfunc import *
+from pyclamp.gui.pyplot import *
+from pyclamp.gui.pydisc import *
 
 class pywavescattabl (pywavescat) : # combines a pywavescat (wave + prev + scat) with a table
   row = None

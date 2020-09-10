@@ -1,5 +1,6 @@
-from pyplot import *
-import pyqtplot as pq
+from pyclamp.gui.pyplot import *
+from pyclamp.dsp.fpfunc import *
+import pyclamp.gui.pyqtplot as pq
 
 class pywanim (pq.anim):
   roi = None
@@ -129,7 +130,4 @@ class pywanim (pq.anim):
     self.initialise(self.pw[0].parent)
     self.setRes(self.width, self.height, self.fps)
     self.setAnimFunc(self.aniWave)
-    return pq.anim.animate(self, n, _patn , _pgb)
-
-
-    
+    return pq.anim.animate(self, n, _patn , _pgb) 

@@ -4,10 +4,9 @@ import numpy as np
 import scipy as sp
 import scipy.stats as stats
 import discprob
-from qmod import *
-from optfunc import *
-from fpfunc import *
-
+from pyclamp.qnp.qmod import *
+from pyclamp.dsp.optfunc import *
+from pyclamp.dsp.fpfunc import *
 
 def amp2wave(_A, si = 0.001, e = 0.05, T = [-2., 8.], ldc = [2., 1.], sn = None):
   nd = nDim(_A)

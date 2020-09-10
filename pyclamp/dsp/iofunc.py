@@ -33,9 +33,9 @@ import csv
 import os
 import fnmatch
 import numpy as np
-from fpfunc import nan2val
-from strfunc import str2rci
-from lsfunc import *
+from pyclamp.dsp.fpfunc import nan2val
+from pyclamp.dsp.strfunc import str2rci
+from pyclamp.dsp.lsfunc import *
 
 def mkdir(dirn):
   if not os.path.exists(dirn):

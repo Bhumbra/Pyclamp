@@ -11,29 +11,30 @@ DEFAULT_TDF_EXTENSION = ".tdf"
 
 import gc
 import webbrowser
-import qmod
-import lbwgui as lbw
-import multio as mio
-import pyplot
-import pydisc
-import pysumm
-import sifunc
-import wffunc
-import fpanal
-import wfanal
-import iofunc
-import channel
-import numpy as np
 from PyQt4 import QtGui
+import numpy as np
+import pyclamp.dsp.sifunc as sifunc
+import pyclamp.dsp.wffunc as wffunc
+import pyclamp.dsp.fpanal as fpanal
+import pyclamp.dsp.wfanal as wfanal
+import pyclamp.dsp.iofunc as iofunc
+import pyclamp.dsp.channel as channel
 
-from pyqtplot import *
-from dtypes import *
-from pgb import *
-from lsfunc import *
-from fpfunc import *
-from strfunc import *
-from tdf import *
-from tpfunc import *
+from pyclamp.qnp.qmod import Qmodl
+import pyclamp.gui.lbwgui as lbw
+import pyclamp.dsp.multio as mio
+from pyclamp.gui.pyplot import pywav
+import pyclamp.gui.pydisc as pydisc
+from pyclamp.gui.pysumm import pysumm
+
+from pyclamp.gui.pyqtplot import *
+from pyclamp.gui.pgb import *
+from pyclamp.dsp.dtypes import *
+from pyclamp.dsp.lsfunc import *
+from pyclamp.dsp.fpfunc import *
+from pyclamp.dsp.strfunc import *
+from pyclamp.dsp.tdf import *
+from pyclamp.dsp.tpfunc import *
 
 def main():                  # OS entry point 
   return PyClamp()  
@@ -101,14 +102,14 @@ class PyClamp:          # front-end controller
   def openAnal(self, ev = None):
     self.Child = self.Area.addChild('Analysis File')
     self.Children.append(self.Child)
-    self.child = qmod.Qmodl()
+    self.child = Qmodl()
     self.children.append(self.child)
     self.child.iniForm(self.Child)
     self.child.openFile()
   def openResu(self, ev = None):
     self.Child = self.Area.addChild('Analysis File')
     self.Children.append(self.Child)
-    self.child = qmod.Qmodl()
+    self.child = Qmodl()
     self.children.append(self.child)
     self.child.iniForm(self.Child)
     self.child.Archive()
@@ -916,7 +917,7 @@ class Pyclamp (pyclamp): # front end
     _Active = _active
     if _Active is None: _Active = self.active
     if self.SetAnal is None:
-      self.SetAnal = pyplot.pywav(self.Data, self.DataInfo, self.onsets, _Active)
+      self.SetAnal = pywav(self.Data, self.DataInfo, self.onsets, _Active)
       self.SetAnal.setPlots(parent = self.Area)
       self.SetMenus()
       self.SetButtons()
@@ -1494,7 +1495,7 @@ class Pyclamp (pyclamp): # front end
     uiOnsets = self.onsets[self.active[0]] if _uiOnsets is None else _uiOnsets
     uiOnes = np.ones(len(uiSelected), dtype = bool)
     uiZeros = np.zeros(len(uiSelected), dtype = bool)
-    self.SetSumm = pysumm.pysumm()
+    self.SetSumm = pysumm()
     self.SetSumm.setData(uiData, [self.DataInfo[self.uiID].samplint, 1., 0.], uiOnsets, 
         [uiOnes, uiSelected, uiZeros], self.table)
     self.SetSumm.setDoneFuncs([self.TableOK, self.TableCC])
@@ -1972,4 +1973,3 @@ class Pyclamp (pyclamp): # front end
     for _pw in self.SetAnal.pw:
       _pw.setactive(self.active)
       _pw.setWave()
-

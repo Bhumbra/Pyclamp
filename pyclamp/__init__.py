@@ -1,2 +1,2 @@
 from pyclamp.dsp import *
-from pyclamp.quantal import *
+from pyclamp.qnp import *

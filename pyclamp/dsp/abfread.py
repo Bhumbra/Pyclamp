@@ -1,11 +1,9 @@
 # ABF File reader (episodic data)
-
 # Nabbed from Harald Hentschke's and Forrest Collman's MATLAB code.
 # Gary Bhumbra
 
 import numpy as np
 import struct as st
-
 
 class SectionInfo:  
   def __init__(self, fh = None, offset = None):
@@ -131,7 +129,7 @@ class ProtocolInfo:
     self.nDigitizerSynchDigitalOuts = st.unpack('h', fh.read(2))[0]
     self.nDigitizerType = st.unpack('h', fh.read(2))[0]
 
-class ABF:
+class ABFile:
   fileName = None
   ABFVersion = None
   nData = 0
@@ -234,10 +232,10 @@ class ABF:
     self.headOffset = self.lDataSectionPtr * blockSize + self.nNumPointsIgnored * self.dataTypeSize
     self.totalSamplingInterval = self.fADCSampleInterval * self.nADCNumChannels
     self.samplint = float(self.fADCSampleInterval) * float(self.nADCNumChannels) * 1e-6
-    self.nData = self.lActualAcqLength
     self.nChannels = int(self.nADCNumChannels)
     self.nEpisodes = max(1, int(self.lActualEpisodes))
-    self.nSamples = int(self.nData / (self.nEpisodes * self.nChannels))
+    self.nSamples = self.lActualAcqLength // int(self.nEpisodes * self.nChannels)
+    self.nData = int(self.nSamples * self.nEpisodes * self.nChannels)
   def ReadSections(self, _offset = 76, _delta = 16):
     offset = _offset
     delta = _delta
@@ -264,7 +262,7 @@ class ABF:
   def ReadStrings(self, blockSize = 512):
     fh = open(self.fileName, mode = 'rb')
     fh.seek(self.StringsSection.uBlockIndex * blockSize)
-    stringssection = fh.read(self.StringsSection.uBytes)
+    stringssection = fh.read(self.StringsSection.uBytes).decode(errors='replace')
     fh.close()
     i = stringssection.lower().find('clampex')
     if i < 0: i = stringssection.lower().find('axoscope')
@@ -279,7 +277,8 @@ class ABF:
     self.ADCSections = [[]] * self.ADCSection.llNumEntries
     fh = open(self.fileName, mode = 'rb') 
     for i in range(self.ADCSection.llNumEntries):
-      self.ADCSections[i] = ADCInfo(fh, self.ADCSection.uBlockIndex*blockSize+self.ADCSection.uBytes*i)
+      self.ADCSections[i] = ADCInfo(fh, int(self.ADCSection.uBlockIndex*blockSize)+\
+                                        int(self.ADCSection.uBytes*i))
     fh.close()
     j = 0
     for i in range(self.ADCSection.llNumEntries):
@@ -354,4 +353,3 @@ class ABF:
     self.IntData = np.fromfile(fh, dtype = 'h', count = self.nData)
     fh.close()
     return self.IntData.reshape( (self.nEpisodes, self.nSamples, self.nChannels) )
-

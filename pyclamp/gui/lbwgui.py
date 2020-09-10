@@ -2,8 +2,8 @@
 
 import sys
 import os
-import strfunc
-from lsfunc import *
+from pyclamp.dsp.strfunc import isnumeric
+from pyclamp.dsp.lsfunc import *
 
 DEFLBWUSE = 'qt'
 
@@ -35,7 +35,6 @@ try:
   import wx
 except ImportError:
   pass
-
 
 class qtKeys: # code to handle Qwidget-specific functions
   Wid = None
@@ -201,7 +200,6 @@ class qtKeys: # code to handle Qwidget-specific functions
       return QtGui.QFileDialog.getSaveFileName(self.Widget, self.Widget.tr(titl), path, self.Widget.tr(filt))
     else:
       return QtGui.QFileDialog.getOpenFileName(self.Widget, self.Widget.tr(titl), path, self.Widget.tr(filt))
-
 
 class wxKeys: # code to handle wx-specific functions
   Wid = None
@@ -486,7 +484,7 @@ class LBWidget: # A box containing a widget and label
         if d == hasnentry[i]: return True, i
       return 0, None
     ld = len(d)
-    if (strfunc.isnumeric(d)):
+    if (isnumeric(d)):
       fd = float(d)
     else:
       fd = None
@@ -647,5 +645,3 @@ class LBWidgets (LBWidget): # a labelled box that contains one or more label-lin
       if not(v): val = False
       validata.append(v)
     return val, validata
-
-

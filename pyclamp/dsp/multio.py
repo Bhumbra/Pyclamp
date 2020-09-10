@@ -6,23 +6,23 @@ try:
   import tkFileDialog
 except:
   pass
-import lbwgui as lbw
-import abf
-import tdf
-import ses
-import smr
-import si16
-import channel
 import numpy as np
-from lsfunc import *
+import pyclamp.gui.lbwgui as lbw
+from pyclamp.dsp.abf import ABF
+from pyclamp.dsp.tdf import TDF
+from pyclamp.dsp.ses import SES
+from pyclamp.dsp.smr import SMR
+from pyclamp.dsp.si16 import SI16
+from pyclamp.dsp.channel import chWave
+from pyclamp.dsp.lsfunc import *
 
 class IOKeys:
   def __init__(self):
-    self.abf = abf.ABF()
-    self.smr = smr.SMR()
-    self.ses = ses.SES()
-    self.tdf = tdf.TDF()
-    self.si16 = si16.SI16()
+    self.abf = ABF()
+    self.smr = SMR()
+    self.ses = SES()
+    self.tdf = TDF()
+    self.si16 = SI16()
     self.Delimiter = {'.abf': '_', '.smr': '_', '.edr': '_', '.wcp': '_', '.si16': '_', '.tab': '_', '.tdf': '_',
         '.tsv': '_'}
     self.OpenFile = {'.abf': self.abf.OpenFile, '.smr': self.smr.OpenFile, '.edr': self.ses.OpenFile, '.wcp':
@@ -360,14 +360,14 @@ class mfilioGUI(mfilio):
         chno.append(cha)
         signof.append([float(self.etData[chp][0]), float(self.etData[chp][1]), float(self.etData[chp][2])])
         signof.append([float(self.etData[cha][0]), float(self.etData[cha][1]), float(self.etData[cha][2])])
-        chans.append(channel.chWave())
+        chans.append(chWave())
         chans[j].index = self.chan[chp].index
         chans[j].name = self.chan[chp].name
         chans[j].units = self.chan[chp].units
         chans[j].samplint = signof[j][0]
         chans[j].gain = signof[j][1]
         chans[j].offset = signof[j][2]
-        chans.append(channel.chWave())
+        chans.append(chWave())
         chans[k].index = self.chan[cha].index
         chans[k].name = self.chan[cha].name
         chans[k].units = self.chan[cha].units

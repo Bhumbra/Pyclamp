@@ -4,10 +4,10 @@
 
 import os
 import numpy as np
-import sesread
-import channel
+from pyclamp.dsp.sesread import WCP, EDR
+from pyclamp.dsp.channel import chWave
 
-class SES (sesread.WCP): # WCP inherits from EDR
+class SES (WCP): # WCP inherits from EDR
   edr = None
   wcp = None 
   IntData = None
@@ -21,7 +21,7 @@ class SES (sesread.WCP): # WCP inherits from EDR
     self.wcp = en.lower() == ".wcp" # default to edr if unknown extension
     self.edr = not(self.wcp)
     if self.edr:
-      head = sesread.EDR.ReadFileInfo(self, _fileName)
+      head = EDR.ReadFileInfo(self, _fileName)
       self.nData = self.ndata
     else:
       head = self.ReadFileInfo(_fileName)
@@ -30,7 +30,7 @@ class SES (sesread.WCP): # WCP inherits from EDR
     if not(self.nData):
       return np.array('h')
     if self.edr:
-      self.IntData = np.reshape(sesread.EDR.ReadIntData(self).T, (self.nChan, self.nEpis, self.nSamp))
+      self.IntData = np.reshape(EDR.ReadIntData(self).T, (self.nChan, self.nEpis, self.nSamp))
       return self.IntData
     fh = open(self.fileName, 'rb')
     self.IntData = np.empty((self.nChan, self.nEpis, self.nSamp), dtype = np.int16)
@@ -50,7 +50,7 @@ class SES (sesread.WCP): # WCP inherits from EDR
   def ReadChannelInfo(self):
     chans = [[]] * self.nChan
     for i in range(self.nChan):
-      chans[i] = channel.chWave()    
+      chans[i] = chWave()    
       chans[i].index = i            
       chans[i].name = self.name[i]
       chans[i].units = self.units[i]

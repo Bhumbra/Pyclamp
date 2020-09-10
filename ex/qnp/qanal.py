@@ -1,7 +1,7 @@
 # PARAMETERS
 
-import lbwgui
-import qmods
+import pyclamp.gui.lbwgui as lbwgui
+import pyclamp.qnp.qmods as qmods
 lbwgui.use('qt')
 
 App = lbwgui.LBWidget(None, None, None, 'app')

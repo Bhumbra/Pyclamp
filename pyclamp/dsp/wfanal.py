@@ -5,12 +5,11 @@ CWDIR = os.getcwd()
 GENDIR = CWDIR + '/../gen/'
 sys.path.append(GENDIR)
 import numpy as np
-from wffunc import *
-from wfprot import *
-import optfunc
-from fpfunc import *
-from fpanal import *
 import scipy.stats as stats
+from pyclamp.dsp.wffunc import *
+from pyclamp.dsp.wfprot import *
+from pyclamp.dsp.fpfunc import *
+from pyclamp.dsp.fpanal import *
 
 if SHOWFITS: import matplotlib.pyplot as mp
 

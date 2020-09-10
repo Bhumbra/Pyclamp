@@ -1,8 +1,8 @@
 # A function to run batch-run qmod runs
 
-import qmod
 import os
-import pgb
+import pyclamp.gui.pgb as pgb
+import pyclamp.qnp.qmod as qnp
 
 from iofunc import *
 from strfunc import *

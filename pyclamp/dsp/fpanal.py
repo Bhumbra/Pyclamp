@@ -1,7 +1,7 @@
-from fpfunc import *
-from optfunc import *
-from nnmod import *
-from pgb import *
+from pyclamp.dsp.fpfunc import *
+from pyclamp.dsp.optfunc import *
+from pyclamp.dsp.nnmod import *
+from pyclamp.gui.pgb import *
 import numpy as np
 
 SHOWFITS = False

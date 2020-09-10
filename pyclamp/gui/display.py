@@ -1,5 +1,4 @@
 import os, platform
-
 if platform.platform().startswith("Windows"):
   DISPLAY = "Windows"
 else:
@@ -11,5 +10,4 @@ else:
     try:
       DISPLAY = os.environ[DISPLAY]
     except KeyError:
-      DISPLAY = None
-      
+      DISPLAY = None      

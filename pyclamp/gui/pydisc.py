@@ -1,16 +1,15 @@
-import wffunc as wf
+import numpy as np
 import pyqtgraph as pg
 from pyqtgraph.Qt import QtGui, QtCore
-import pyqtplot as pq
-import pyplot
-from lsfunc import *
-from fpfunc import *
-from xyfunc import *
-from pyplot import *
-from fpanal import *
-from pgb import pgb
-import channel
-import numpy as np
+import pyclamp.gui.pyqtplot as pq
+import pyclamp.gui.pyplot as pyplot
+from pyclamp.dsp.lsfunc import *
+from pyclamp.dsp.fpfunc import *
+from pyclamp.dsp.fpanal import *
+from pyclamp.gui.xyfunc import *
+from pyclamp.gui.pyplot import *
+from pyclamp.gui.pgb import pgb
+from pyclamp.dsp.channel import chWave
 
 class pywavescat: # combines a wave plot with a scatter plot with a discriminating ellipse
   form = None
@@ -97,7 +96,7 @@ class pywavescat: # combines a wave plot with a scatter plot with a discriminati
       self.docks = [None] * 3 # pick, wave, scat
       self.boxes = [None] * 3 # pick, wave, scat
       dockTitles = ["Channel", "Channel", "Scatter"]
-      if isinstance(self.wave.chinfo, channel.chWave):
+      if isinstance(self.wave.chinfo, chWave):
         dockTitles[0] = self.wave.chinfo.name
         dockTitles[1] = self.wave.chinfo.name
       pickwavescat = [self.pick, self.wave, self.scat]

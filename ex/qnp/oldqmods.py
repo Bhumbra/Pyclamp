@@ -5,8 +5,8 @@
 import sys
 sys.path.append("/home/admin/code/python/gen/") 
 from pylab import *
-from iofunc import *
-from iplot import pbfig
+from pyclamp.dsp.iofunc import *
+from pyclamp.gui.iplot import pbfig
 
 import quantal
 import os

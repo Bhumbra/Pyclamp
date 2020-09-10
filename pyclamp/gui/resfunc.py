@@ -1,7 +1,7 @@
 import matplotlib.pyplot as mp
 import numpy as np
-import iplot
-import fpfunc
+from pyclamp.dsp.fpfunc import geomean, geostd
+from pyclamp.gui.iplot import itxtplot, isubplot
 
 class sumstatplot:
   def __init__(self, args = None):
@@ -19,8 +19,8 @@ class sumstatplot:
       raise ValueError("Subplot specification must be a list of two subplot specifications")
     args0 = args[0]
     args1 = args[1]
-    self.itp = iplot.itxtplot(args0[0], args0[1], args0[2])
-    self.isp = iplot.isubplot(args1[0], args1[1], args1[2])
+    self.itp = itxtplot(args0[0], args0[1], args0[2])
+    self.isp = isubplot(args1[0], args1[1], args1[2])
   def addDataSet(self, label, value, isgeo = False):
     self.Label.append(label)
     self.Value.append(value)
@@ -31,8 +31,8 @@ class sumstatplot:
     self.Stdvs = np.empty(n, dtype = float)
     for i in range(n):
       if self.IsGeo[i]:
-        self.Means[i] = fpfunc.geomean(self.Value[i])
-        self.Stdvs[i] = fpfunc.geostd(self.Value[i])
+        self.Means[i] = geomean(self.Value[i])
+        self.Stdvs[i] = geostd(self.Value[i])
       else:
         self.Means[i] = np.mean(self.Value[i])
         self.Stdvs[i] = np.std(self.Value[i])

@@ -1,5 +1,5 @@
 import sys
-import qmods
+import pyclamp.qnp.qmods as qmods
 
 def main(_argv):
   argv = [1, 128, 64, 1, 32, 32, 1, 0]

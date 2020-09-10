@@ -1,4 +1,4 @@
-from bqa import *
+from pyclamp.qnp.bqa import *
 from pylab import *; #ion()
 #import lbwgui as lbw
 

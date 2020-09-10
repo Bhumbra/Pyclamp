@@ -1,8 +1,8 @@
 import numpy as np
 import scipy as sp
 import scipy.optimize as spo
-from fpfunc import *
-from dtypes import *
+from pyclamp.dsp.fpfunc import *
+from pyclamp.dsp.dtypes import *
 
 np.E = 0.57721566490153286060651209008240243104215933593992
 
@@ -12,7 +12,7 @@ def sortparam(_p, s, ofs, ply): # sorts parameter groups in order specified by s
   if m % ply:
     raise ValueError("Parameter dimensions incompatible with specified offset and ply-value")
   
-  if m / ply != n:
+  if m // ply != n:
     raise ValueError("Parameter dimensions incompataible with sort specification")
   
   p = _p[:ofs].copy()
@@ -43,7 +43,7 @@ def expdfun(p, x, opts = 0): # exponential decay function (either polarity, and 
   if (lp - 1) % 2:
     raise ValueError("Exponential decay parameter argument dimension of unknown specification")
 
-  n = (lp - 1) / 2
+  n = (lp - 1) // 2
   
   exponent = np.empty( (n, lx), dtype = float)
   exponential = np.empty( (n, lx), dtype = float)
@@ -137,7 +137,7 @@ def exp0fun(p, x, opts = 0): # opts = 0 returns value, 1 returns derivative, 2 r
   if lp % 2:
     raise ValueError("Exponential decay parameter argument dimension of unknown specification")
 
-  n = lp / 2
+  n = lp // 2
   
   exponent = np.empty( (n, lx), dtype = float)
   exponential = np.empty( (n, lx), dtype = float)
@@ -207,7 +207,7 @@ def expofun(_p, _x, opts = 0): # y is always positive
   lp, lx = len(_p), len(_x)
   if (lp - 1) % 2:
     raise ValueError("expofun: input parameter argument dimension of unknown specification")
-  n = (lp - 1) / 2
+  n = (lp - 1) // 2
   p, x = np.copy(_p), -_x
   p[1:] = expo(p[1:])
 
@@ -287,7 +287,7 @@ def exppulsefun(p, x, opts = 0):
   if (lp - 1) % 4:
     raise ValueError("Exponential pulse parameter argument dimension of unknown specification") 
   
-  n = (lp-1)/4;  
+  n = (lp-1)//4;  
   if n == 1:
     mult = np.array(p[1]).reshape(1)
     xoff = np.array(p[2]).reshape(1)
@@ -344,7 +344,7 @@ def exppulsefun(p, x, opts = 0):
   if (lp - 1) % 3:
     raise ValueError("Exponential decay parameter argument dimension of unknown specification")
 
-  n = lp / 3
+  n = lp // 3
 
   mult = np.empty( (n), dtype = float)
   toff = np.empty( (n), dtype = float)
@@ -492,8 +492,8 @@ def exppulsefit(x, y, n = 1, siglogamp = None):
   maxi = lamp.argmax()
   loai = np.nonzero(lamp < (lamp[maxi] - siglogamp)); loai = loai[0]
   if len(loai):    
-    i0mx = maxi * 3 + 1    
-    i0lo = loai * 3 + 1
+    i0mx = int(maxi * 3 + 1)
+    i0lo = int(loai * 3 + 1)
     snmx = float(np.sign(fit[0][i0mx]))
     for i in range(len(loai)):
       i0 = i0lo[i]
@@ -512,7 +512,7 @@ def exppulsefit(x, y, n = 1, siglogamp = None):
  
 def exppulseinf(p): # returns x values of inflection point for each component
   mino = 1e-300
-  n = len(p) / 3  
+  n = len(p) // 3  
   x = np.empty( (n), dtype = float)  
   for i in range(n):    
     x[i] = p[2+i*3] - np.log(0.5)/(mino+expo(p[3+i*3]))        
@@ -536,7 +536,7 @@ def expmfun(p, x, opts = 0):
   if (lp - 1) % 3:
     raise ValueError("Exponential decay parameter argument dimension of unknown specification")
 
-  n = lp / 3
+  n = lp // 3
 
   tamp = np.empty( (n), dtype = float)
   toff = np.empty( (n), dtype = float)
@@ -652,7 +652,7 @@ def exppfun(_p, _x, opts = 0):
   lp, lx = len(_p), len(_x)
   if (lp - 1) % 4:
     raise ValueError("exppfun: input parameter argument dimension of unknown specification")
-  n = (lp - 1) / 4
+  n = (lp - 1) // 4
   p, x = np.copy(_p), -_x
   p[1:] = expo(p[1:])
 
@@ -708,7 +708,7 @@ def exppamp(p):
   return exppval(p, exppinf(p)) - p[0]
   
 def exppfit(_x, _y, n = 1):
-  lp = 4 * n + 1
+  lp = int(4 * n + 1)
   if len(_x) < lp: raise ValueError("Insufficent data for exponential fit(s)")  
 
   _i = np.argsort(_x)
@@ -767,7 +767,7 @@ def exp2fun(_p, _x, opts = 0):
   lp, lx = len(_p), len(_x)
   if (lp - 1) % 3:
     raise ValueError("exppfun: input parameter argument dimension of unknown specification")
-  n = (lp - 1) / 3
+  n = (lp - 1) // 3
   p, x = np.copy(_p), -_x
   p[1:] = expo(p[1:])
 
@@ -820,7 +820,7 @@ def exp2inf(p):
   lp = len(p)
   if (lp - 1) % 3:
     raise ValueError("exppfun: input parameter argument dimension of unknown specification")
-  n = (lp - 1) / 3
+  n = (lp - 1) // 3
   x = np.empty(n, dtype = float)
   k = 1
   for i in range(n):
@@ -1019,7 +1019,7 @@ def idftfun(p, x, opts = 0): # opts = 0 returns value, 1 returns derivative, 2 r
   ssign = -1.
   lp, lx = len(p), len(x)
   if not(lp % 2): raise ValueError("Parameter vector must be odd in length")
-  n = lp / 2
+  n = lp // 2
   c = np.empty((n, lx), dtype = float)
   s = np.empty((n, lx), dtype = float)
   J = np.tile(c0, (lp, lx))
@@ -1051,7 +1051,7 @@ def idftfit(x, y, n = None):
   nx = len(x)
   ny = len(y)
   if nx != ny: raise ValueError("x/y inputs incommensurate.")
-  if n is None: n = nx / 2
+  if n is None: n = nx // 2
   p0 = np.zeros(n*2+1, dtype = float)
   p0[0] = .5 * np.mean(y)
   fit = spo.leastsq(idftval, p0, args=(x,y), Dfun=idftder, col_deriv = 1)

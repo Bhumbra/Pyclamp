@@ -1,13 +1,13 @@
 # Quantal analysis wrapper function
 
-import iplot
+import os
 import numpy as np
 import matplotlib.pyplot as mp
-import qmod 
-import os
-from fpfunc import *
-from iofunc import *
-from lsfunc import *
+import pyclamp.qnp.qmod as qmod
+import pyclamp.gui.iplot as iplot
+from pyclamp.dsp.fpfunc import *
+from pyclamp.dsp.iofunc import *
+from pyclamp.dsp.lsfunc import *
   
 def anal(data, e = None, nmax = None, modelprob = 2, rescoef = 1.0, resmin = 128, resmax = 192, showfig = True, numformat = "%.3f"):
   modelbeta = modelprob == 2

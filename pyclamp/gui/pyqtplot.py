@@ -1,4 +1,6 @@
 import os
+import numpy as np
+import shutil
 import pyqtgraph as pg
 from pyqtgraph.exporters.ImageExporter import ImageExporter
 try:
@@ -17,8 +19,6 @@ from pyqtgraph.dockarea import DockArea, Dock
 import pyqtgraph.opengl as gl # ImportError means python-opengl is missing
 from pyqtgraph.opengl.GLViewWidget import GLViewWidget
 from pyqtgraph.opengl import GLSurfacePlotItem
-import shutil
-import numpy as np
 import pyqtgraph.multiprocess as pgmp
 from time import time
 

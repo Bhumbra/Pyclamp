@@ -1,14 +1,14 @@
-import wffunc as wf
+import numpy as np
 import pyqtgraph as pg
 from pyqtgraph.Qt import QtGui, QtCore
-from pyqtplot import *
-import lbwgui as lbw
-from pgb import pgb
-from lsfunc import *
-import channel
-import numpy as np
-from fpfunc import *
-from xyfunc import *
+from pyclamp.gui.pyqtplot import *
+import pyclamp.gui.lbwgui as lbw
+from pyclamp.gui.pgb import pgb
+from pyclamp.gui.xyfunc import *
+from pyclamp.dsp.channel import chWave
+from pyclamp.dsp.lsfunc import *
+from pyclamp.dsp.wffunc import minmax2
+from pyclamp.dsp.fpfunc import *
 
 def SetJetRGBC(_JetRGBC = None): # default None (0.5 works well with black foreground on white backgroun)
   global JetRGBC
@@ -241,7 +241,7 @@ class pywave:
     self.setMarks()
     self.setVisual(_Active)
   def setChInfo(self, _chinfo = None):
-    self.chinfo = channel.chWave()
+    self.chinfo = chWave()
     self.chinfo.index = 0
     self.chinfo.name = ''
     self.chinfo.units = ''
@@ -268,7 +268,7 @@ class pywave:
           self.chinfo.offset = _chinfo[2]
         else:
           raise ValueError("pywave: channel info lists must contain numeric data only.")
-    elif isinstance(_chinfo, channel.chWave):
+    elif isinstance(_chinfo, chWave):
       self.chinfo.index = _chinfo.index
       self.chinfo.name = _chinfo.name
       self.chinfo.units = _chinfo.units
@@ -329,7 +329,7 @@ class pywave:
         self.plot.remove(self.Marks[i])
     self.Marks = None
   def setVisual(self, _Active = [True, True, False]):
-    self.mm2 = wf.minmax2(type(self.data[0][0][0]))
+    self.mm2 = minmax2(type(self.data[0][0][0]))
     self.minData = np.inf
     self.maxData = -np.inf
     self.Data = []             # Single 2D array containing all data
@@ -899,7 +899,7 @@ class pywave2: # two pywaves sharing same data aligned horizontally side-by-side
     for i in range(self.nc):
       if self.useDocks:
         docktitle = "Ch #" + str(i)
-        if isinstance(self.chinfo, channel.chWave):
+        if isinstance(self.chinfo, chWave):
           docktitle = self.chinfo.name + "/" + self.chinfo.units
         self.docks[i] = dock(docktitle)
         self.boxes[i] = gbox()
@@ -1038,7 +1038,7 @@ class pywav (pywave2): # multiple pywaves aligned vertically with different data
     for i in range(self.nr):
       if self.useDocks:
         docktitle = "Ch #" + str(i)
-        if isinstance(self.ChInfo[i], channel.chWave):
+        if isinstance(self.ChInfo[i], chWave):
           docktitle = self.ChInfo[i].name + "/" + self.ChInfo[i].units
         self.docks[i] = dock(docktitle)
         self.boxes[i] = gbox()
@@ -1157,7 +1157,7 @@ class pywav2 (pywav): # multiple pywav2s aligned vertically with different data
         h += 1
         if self.useDocks:
           docktitle = "Ch #" + str(i)
-          if isinstance(self.ChInfo[i], channel.chWave):
+          if isinstance(self.ChInfo[i], chWave):
             docktitle = self.ChInfo[i].name + "/" + self.ChInfo[i].units
           self.docks[h] = dock(docktitle)
           self.boxes[h] = gbox()

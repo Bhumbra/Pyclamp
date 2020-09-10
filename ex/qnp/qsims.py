@@ -2,12 +2,12 @@
 
 # A multiple quantal simulator
 
-from mplqt import *
-from numpy import *
-from iofunc import *
-from fpfunc import *
-from iplot import pbfig
 import numpy as np
+from numpy import *
+from pyclamp.gui.mplqt import *
+from pyclamp.dsp.iofunc import *
+from pyclamp.dsp.fpfunc import *
+from pyclamp.guiiplot import pbfig
 
 import qsim
 

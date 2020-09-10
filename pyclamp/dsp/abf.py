@@ -1,8 +1,8 @@
 import numpy as np
-import abfread
-import channel
+from pyclamp.dsp.abfread import ABFile
+from pyclamp.dsp.channel import chWave 
 
-class ABF(abfread.ABF):
+class ABF(ABFile):
   IntData = None
   ADCData = None
   def __init__(self, _fileName = None):
@@ -36,7 +36,7 @@ class ABF(abfread.ABF):
   def ReadChannelInfo(self):
     chans = [[]] * self.nChannels
     for i in range(self.nChannels):
-      chans[i] = channel.chWave()    
+      chans[i] = chWave()    
       chans[i].index = i            
       chans[i].name = self.name[i] if isinstance(self.name[i], str) else self.name[i].decode('ascii')
       chans[i].units = self.units[i] if isinstance(self.units[i], str) else self.units[i].decode('ascii')

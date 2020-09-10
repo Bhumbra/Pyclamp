@@ -3,7 +3,7 @@
 # Gary Bhumbra
 
 import numpy as np
-from dtypes import *
+from pyclamp.dsp.dtypes import *
 
 #-------------------------------------------------------------------------------
 class chInfo: # Basic channel info

@@ -1,8 +1,8 @@
-import channel
 import numpy as np
-from fpfunc import *
-from wffunc import *
 from types import *
+from pyclamp.dsp.channel import chWaev
+from pyclamp.dsp.fpfunc import *
+from pyclamp.dsp.wffunc import *
 
 # An active channel modules
 
@@ -27,10 +27,10 @@ class feature(deltaxy): # step and ramp provider
     y[i] = yi
     return y
 
-class protocol(channel.chWaev):
+class protocol(chWaev):
   def __init__(self, _index = 0, _name = "", _data = None, _units = "", _quantint = 1., 
                _waev = None, _samplint = None, _gain = None, _offset = None):
-    channel.chWaev.__init__(self, _index, _name, _data, _units, _quantint, _waev, _samplint, _gain, _offset)
+    chWaev.__init__(self, _index, _name, _data, _units, _quantint, _waev, _samplint, _gain, _offset)
     self.setFeature()
   def initProt(self, _ns = 0, _ne = 1, _nl = 0):
     self.ns = int(_ns)
@@ -70,7 +70,7 @@ class protocol(channel.chWaev):
       Y = np.tile(Y.reshape((1, len(_Y))), (z, 1))
     self.initProt(len(Y[0]), len(Y))
     self.setFeature()
-    ny0 = min(ny0, self.ns)
+    ny0 = int(min(ny0, self.ns))
     Yz = Y[:z]
     Y0 = Yz[:,:ny0]
     Y0min, Y0max, Y0med = Y0.min(axis=1), Y0.max(axis=1), np.median(Y0, axis=1)

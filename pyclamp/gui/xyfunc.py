@@ -1,8 +1,8 @@
 # A module to perform GUI-tasks outside a GUI
 
 import numpy as np
-from dtypes import *
-from fpfunc import *
+from pyclamp.dsp.dtypes import *
+from pyclamp.dsp.fpfunc import *
 
 def rescale(x, xlo, xhi, Xlo = 0., Xhi = 1.):
   dx = xhi - xlo

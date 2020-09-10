@@ -2,10 +2,10 @@
 
 import numpy as np
 import scipy as sp
-from sifunc import *
-from fpfunc import *
-from dtypes import *
-from optfunc import *
+from pyclamp.dsp.sifunc import *
+from pyclamp.dsp.fpfunc import *
+from pyclamp.dsp.dtypes import *
+from pyclamp.dsp.optfunc import *
 
 MAXSI = 9223372036854775807
 

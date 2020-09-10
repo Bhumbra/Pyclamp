@@ -1,7 +1,7 @@
 # string functions
 
 import numpy as np
-from dtypes import *
+from pyclamp.dsp.dtypes import *
 
 #-------------------------------------------------------------------------------
 def strfind(S, s):

@@ -4,8 +4,8 @@ import matplotlib as mpl
 mpl.use('qt4agg')
 from pylab import *; ion()
 import numpy as np
-from qsim import *;
-from iofunc import *
+from pyclamp.qnp.qsim import *;
+from pyclamp.dsp.iofunc import *
 
 N0 = 5 # number of inter-neurones
 NS = 200 # number of sweeps

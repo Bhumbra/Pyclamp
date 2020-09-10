@@ -1,7 +1,7 @@
 # A waveform maker from simuluated quantal data
 
-from qsim import *
-from tdf import *
+from pyclamp.dnp.qsim import *
+from pyclamp.dsp.tdf import *
 
 # PARAMETERS
 

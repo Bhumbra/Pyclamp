@@ -4,13 +4,13 @@ import matplotlib as mpl
 import matplotlib.pyplot as mp
 import numpy as np
 import channel
-from fpfunc import *
-from fpanal import *
-from lsfunc import *
-from strfunc import *
-from sifunc import *
-from wffunc import *
-import iplot as ip
+from pyclamp.dsp.fpfunc import *
+from pyclamp.dsp.fpanal import *
+from pyclamp.dsp.lsfunc import *
+from pyclamp.dsp.strfunc import *
+from pyclamp.dsp.sifunc import *
+from pyclamp.dsp.wffunc import *
+import pyclamp.dsp.iplot as ip
 
 LEFTBUTTON = 1
 MIDDLEBUTTON = 2

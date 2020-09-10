@@ -3,14 +3,13 @@ import sys
 import platform
 import numpy as np
 from time import time
-from lsfunc import *
-from dtypes import *
-from display import DISPLAY
+from pyclamp.dsp.lsfunc import *
+from pyclamp.dsp.dtypes import *
+from pyclamp.gui.display import DISPLAY
 
 PLATFORM = platform.platform()
 CONSOLECOL = {'w':97, 'm':95, 'r':91, 'y':93, 'g':92, 'c':96, 'b':94, 'k':30, 'e':1,
               'W':97, 'M':95, 'R':91, 'Y':93, 'G':92, 'C':96, 'B':94, 'K':30, 'E':1}
-
 
 if DISPLAY is None:
   QtGui = None

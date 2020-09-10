@@ -1,26 +1,25 @@
 import os
 import sys
 import webbrowser
-import numpy as np
-import scipy as sp
-import scipy.stats as stats
-import numpy as np
-import scipy as sp
-import scipy.stats as stats
-from lsfunc import *
-from fpfunc import *
-from iofunc import *
-import discprob
 import time
-"""
+import numpy as np
+import scipy as sp
+import scipy.stats as stats
+import numpy as np
+import scipy as sp
+import scipy.stats as stats
+
+from pyclamp.dsp.lsfunc import *
+from pyclamp.dsp.fpfunc import *
+from pyclamp.dsp.iofunc import *
+import pyclamp.dsp.discprob as discprob
 from PyQt4 import QtGui
 from PyQt4 import QtCore
-from pgb import pgb
-import lbwgui as lbw
+from pyclamp.gui.pgb import pgb
+import pyclamp.gui.lbwgui as lbw
 import pyqtgraph as pg
 import pyqtgraph.opengl as gl # ImportError means python-opengl is missing
-import pyqtplot as pq
-"""
+import pyclamp.gui.pyqtplot as pq
 
 CWDIR = os.getcwd()
 MANDIR = CWDIR + '/../pyclamp/man/'
@@ -182,7 +181,7 @@ def readQfile(pf = "", spec = None): # an attempt of a universal import function
   # Check if result file
   rsltfile = True
   lend = len(_Data)
-  lend2 = lend/2
+  lend2 = lend//2
   if ipfe == ".tdf" or ipfe == ".tab": # *.tab delimited file extenstion
     if lend > 0: # has multiple pages
       if lend % 2 == 0: # of even number
@@ -1133,7 +1132,7 @@ class Qmodl (qmodl): # A pyqtgraph front-end for qmodl
       _bbox.setText(0, 'Export')
       _bbox.Connect(0, self.ExpHist)
       return _form
-    num = 1000.
+    num = 1000
     Xi = nanravel(self.X[i])
     x = binspace(self.minx, self.maxx, bw)
     hx = np.linspace(self.minx, self.maxx, num)

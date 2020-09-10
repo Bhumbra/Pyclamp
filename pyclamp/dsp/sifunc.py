@@ -1,6 +1,5 @@
 import numpy as np
-import strfunc
-from lsfunc import *
+from pyclamp.dsp.lsfunc import *
 
 MAXSI = 9223372036854775807
 

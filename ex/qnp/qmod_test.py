@@ -1,11 +1,11 @@
+import sys
+import datetime
+sys.path.append('/mnt/ntfs/g/GSB/code/python/gen/')
 import matplotlib
 matplotlib.use("Qt5Agg")
 from pylab import *; ion()
-import sys
-sys.path.append('/mnt/ntfs/g/GSB/code/python/gen/')
-from iofunc import *
-import datetime
-from qmod import *
+from pyclamp.dsp.iofunc import *
+from pyclamp.qnp.qmod import *
 
 # PARAMETERS
 

@@ -31,10 +31,6 @@ class asy:
 		self.send('quit');
 		self.session.stdin.close();
 		self.session.wait()
-		
-
-
-
 
 if __name__=="__main__":
 	g = asy()

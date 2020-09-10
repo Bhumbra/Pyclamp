@@ -1,4 +1,4 @@
-from qmod import *
+from pyclamp.qnp.qmod import *
 
 DEFIPDIR = ''
 DEFOPDIR = '' 

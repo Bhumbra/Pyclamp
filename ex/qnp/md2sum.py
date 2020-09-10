@@ -1,8 +1,8 @@
 # A Python script that parses TDF files to calculate sums from TDF MD entries
 
-from iofunc import *
-from lsfunc import *
-from strfunc import *
+from pyclamp.dsp.iofunc import *
+from pyclamp.dsp.lsfunc import *
+from pyclamp.dsp.strfunc import *
 
 # PARAMETERS
 
