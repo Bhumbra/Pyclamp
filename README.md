@@ -2,14 +2,9 @@
 
 ## INSTALLATION:
 
-Install package python3-PyQt4 for your GNU/Linux distro then run:
-
-```sh
-$ pip3 install --user .
-```
-
-If your pip version is out of date, it needs to be upgraded (version>=20.0)
-before installing
+Install package python3-PyQt4 for your GNU/Linux distro using the package 
+manger. Then check if your pip version is in date (i.e. version>=20.0),
+and if necessary update it before installing:
 
 ```sh
 $ pip3 --version
