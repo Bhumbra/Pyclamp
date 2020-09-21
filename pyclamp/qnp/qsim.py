@@ -3,7 +3,7 @@
 import numpy as np
 import scipy as sp
 import scipy.stats as stats
-import discprob
+import pyclamp.dsp.discprob
 from pyclamp.qnp.qmod import *
 from pyclamp.dsp.optfunc import *
 from pyclamp.dsp.fpfunc import *

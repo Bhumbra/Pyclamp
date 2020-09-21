@@ -3,3 +3,5 @@ scipy
 xlrd
 python-qt
 pyqtgraph
+joblib
+probayes>=0.0.3

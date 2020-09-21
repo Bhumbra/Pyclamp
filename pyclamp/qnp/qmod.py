@@ -12,6 +12,7 @@ import scipy.stats as stats
 from pyclamp.dsp.lsfunc import *
 from pyclamp.dsp.fpfunc import *
 from pyclamp.dsp.iofunc import *
+from pyclamp.qnp.bqa_dgei import BQA
 import pyclamp.dsp.discprob as discprob
 from PyQt4 import QtGui
 from PyQt4 import QtCore
@@ -915,6 +916,13 @@ class Qmodl (qmodl): # A pyqtgraph front-end for qmodl
   defxy = [720, 540]
   form = None
   area = None
+  dgei = None
+  PQ = None
+  PA = None
+  PR = None
+  PG = None
+  PV = None
+  PN = None
   def openFile(self, spec = True):
     self.Base = lbw.LBWidget(None, None, None, 'base')
     self.pf = self.Base.dlgFileOpen("Open File", "", "Tab-delimited (*.tdf *.tab *.tsv);;Excel file (*.xlsx *.xls);;All (*.*)")
@@ -990,7 +998,7 @@ class Qmodl (qmodl): # A pyqtgraph front-end for qmodl
     if not(np.isnan(self.hatn)):
       _hatr = float(self.hatq * int(np.round((self.hatn))))
       hatmn_ = _hatmn[_hatmn <= _hatr] if self.pol > 0. else _hatmn[_hatmn >= _hatr]
-      hatvr_ = QLV(hatmn_, self.hate, self.hatn, self.hatg, self.hatl, self.hata)
+      hatvr_ = QLV(np.abs(hatmn_), self.hate, self.hatn, self.hatg, np.abs(self.hatl), self.hata)
       maxhatv = max(maxhatv, np.max(hatvr_))
       Hatvr[1] = pg.PlotCurveItem(hatmn_, hatvr_, pen={'color':'g','width':1})
     xLims = np.array((0., self.pol*maxabsr), dtype = float)
@@ -1033,29 +1041,31 @@ class Qmodl (qmodl): # A pyqtgraph front-end for qmodl
         if i != 3 or self.modelBeta:
           _graph[i] = self.plotMarg1D(i, _gb[i])
       _area.add(_dock2)
-      _bbox = _dock2.addBbox()
-      _bbox.addButton()
-      _bbox.setIconSize(0, QtCore.QSize(1,1))
-      _bbox.setText(0, 'Export')
-      _bbox.Connect(0, self.ExpMarg1D)
+      if self.dgei is not None:
+        _bbox = _dock2.addBbox()
+        _bbox.addButton()
+        _bbox.setIconSize(0, QtCore.QSize(1,1))
+        _bbox.setText(0, 'Export')
+        _bbox.Connect(0, self.ExpMarg1D)
       return _form
     _plot = pq.graph(parent=_gbox)
     P_ = _P[i]
-    x = nanravel(P_.X[0])
-    y = nanravel(P_.P)
-    if i < 2: x *= self.pol
-    if i < 3: x = np.log10(x)
-    if i < 5:
-      _mp = pg.PlotCurveItem(x, y, pen={'color':'w','width':1})
-    else:
-      xLims = [0., np.max(x)]
-      yLims = [0., np.max(y)]
-      Lims = pg.PlotCurveItem(xLims, yLims, pen=pg.mkPen(None))
-      _plot.add(Lims)
-      _mp = _plot.bar(x, y, _pen={'color':'w','width':1})
-    _plot.add(_mp)
-    _plot.setLabel('left', "Probability")
-    _plot.setLabel('bottom', _X[i])
+    if P_ is not None:
+      x = nanravel(P_.X[0])
+      y = nanravel(P_.P)
+      if i < 2: x *= self.pol
+      if i < 3: x = np.log10(np.abs(x))
+      if i < 5:
+        _mp = pg.PlotCurveItem(x, y, pen={'color':'w','width':1})
+      else:
+        xLims = [0., np.max(x)]
+        yLims = [0., np.max(y)]
+        Lims = pg.PlotCurveItem(xLims, yLims, pen=pg.mkPen(None))
+        _plot.add(Lims)
+        _mp = _plot.bar(x, y, _pen={'color':'w','width':1})
+      _plot.add(_mp)
+      _plot.setLabel('left', "Probability")
+      _plot.setLabel('bottom', _X[i])
   def plotxyZ(self, _x, _y, _Z, _vbox = None):
     _mesh = pq.surf(_x, _y, _Z, shader='normalColor')
     _vbox = pq.BaseVboxClass() if _vbox is None else _vbox
@@ -1141,7 +1151,10 @@ class Qmodl (qmodl): # A pyqtgraph front-end for qmodl
     h = freqhist(Xi, x)
     maxh = np.max(h)
     if not(np.isnan(self.hatn)):
-      hy = QLF(hx, self.hate, np.round(self.hatn), self.hatg, self.hatl, self.hata, self.hats[i])
+      hatl = self.hatl
+      if self.pol < 0. and hatl > 0.:
+        hatl *= -1.
+      hy = QLF(hx, self.hate, np.round(self.hatn), self.hatg, hatl, self.hata, self.hats[i])
       hy *= self.nx[i] * dh
       maxh = max(maxh, np.max(hy))
     _plot0 = pq.graph(parent=_gbox0)
@@ -1153,10 +1166,11 @@ class Qmodl (qmodl): # A pyqtgraph front-end for qmodl
       _plot0.add(qlfdn)
     if _gbox1 is None or np.isnan(self.hatn): return x, h, hx, hy
     _plot1 = pq.graph(parent=_gbox1)
-    _mp = pg.PlotCurveItem(self.s, self.PMS.P[i], pen={'color':'w','width':1})
-    _plot1.add(_mp)
-    _plot1.setLabel('left', "Probability")
-    _plot1.setLabel('bottom', "Probability")
+    if self.dgei is None:
+      _mp = pg.PlotCurveItem(self.s, self.PMS.P[i], pen={'color':'w','width':1})
+      _plot1.add(_mp)
+      _plot1.setLabel('left', "Probability")
+      _plot1.setLabel('bottom', "Probability")
     return x, h, hx, hy
   def plotHatValues(self, _tabl = None):
     tabl_ = pq.tabl() if _tabl is None else _tabl
@@ -1167,7 +1181,10 @@ class Qmodl (qmodl): # A pyqtgraph front-end for qmodl
     _results.append(['MPFA_Q', str(float(self.parq))])
     _results.append(['MPFA_N', str(float(self.parn))])
     if not(np.isnan(self.hatn)):
-      _results.append(['Res.', str(self.sres) + ", " + str(self.vres) + ", " + str(self.ares) + ", " + str(self.nres)])
+      if self.dgei is None:
+        _results.append(['Res.', str(self.sres) + ", " + str(self.vres) + ", " + str(self.ares) + ", " + str(self.nres)])
+      else:
+        _results.append(['Res.', str(self.nres) + ", " + str(self.qres) + ", " + str(self.gres)])
       _results.append(['r', str(float(self.hatr))])
       _results.append(['q', str(float(self.hatq))])
       _results.append(['gamma', str(float(self.hatg))])
@@ -1212,21 +1229,26 @@ class Qmodl (qmodl): # A pyqtgraph front-end for qmodl
     if np.isnan(self.hatn):
       self.bbox.addButton()
       self.bbox.setIconSize(1, QtCore.QSize(1,1))
-      self.bbox.setText(1, 'Run quantal analysis')
+      self.bbox.setText(1, 'Run original BQA')
       self.bbox.Connect(1, self.SetRes)
+      self.bbox.addButton()
+      self.bbox.setIconSize(1, QtCore.QSize(1,1))
+      self.bbox.setText(2, 'Run BQA DGEI')
+      self.bbox.Connect(2, self.RunDGEI)
     else:
       self.bbox.addButton()
       self.bbox.setIconSize(1, QtCore.QSize(1,1))
       self.bbox.setText(1, 'Marginal 1D')
       self.bbox.Connect(1, self.PlotMarg1D)
       self.bbox.addButton()
-      self.bbox.setIconSize(2, QtCore.QSize(1,1))
-      self.bbox.setText(2, 'Marginal 2D')
-      self.bbox.Connect(2, self.PlotMarg2D)
-      self.bbox.addButton()
-      self.bbox.setIconSize(3, QtCore.QSize(1,1))
-      self.bbox.setText(3, 'Save')
-      self.bbox.Connect(3, self.Archive)
+      if self.dgei is None:
+        self.bbox.setIconSize(2, QtCore.QSize(1,1))
+        self.bbox.setText(2, 'Marginal 2D')
+        self.bbox.Connect(2, self.PlotMarg2D)
+        self.bbox.addButton()
+        self.bbox.setIconSize(3, QtCore.QSize(1,1))
+        self.bbox.setText(3, 'Save')
+        self.bbox.Connect(3, self.Archive)
     self.area.resize(self.defxy[0], self.defxy[1])
     self.form.resize(self.defxy[0], self.defxy[1])
     if self.stem is not None:
@@ -1331,6 +1353,79 @@ class Qmodl (qmodl): # A pyqtgraph front-end for qmodl
     self.setPriors(False, _pgb)
     self.calcPosts(USEPARALLEL, _pgb)
     _pgb.close()
+    self.clrGUI()
+    self.iniGUI().show()
+  def RunDGEI(self, ev = None):
+    self.imv = [[]] * self.NX
+    for i in range(self.NX):
+      self.imv[i] = "".join( (self.labels[i], ": Mean=", str(self.mn[i]), "; Var.=", str(self.vr[i])) )
+    self.Dlg = lbw.LBWidget(None, None, None, 'dlgform', self.pf)
+    self.Box = lbw.LBWidget(self.Dlg, None, 1)
+    self.LBi = lbw.LBWidget(self.Dlg, "Data selection", 1,"listbox", None, self.imv)
+    self.LBi.setMode(3, range(self.NX))
+    self.EDq = lbw.LBWidget(self.Dlg, 'Quantal size sampling resolution: ', 1, 'edit', '128')
+    self.EDg = lbw.LBWidget(self.Dlg, 'Gamma shape parameter sampling resolution: ', 1, 'edit', '64')
+    self.EDn = lbw.LBWidget(self.Dlg, "Number of release sites sampling resolution: ", 1, 'edit', '16')
+    self.EDN = lbw.LBWidget(self.Dlg, "Max. no. release sites (ideally integer*(n_res-1)+1)", 1, 'edit', '16')
+    self.BBx = lbw.BWidgets(self.Dlg, 0, None, ["Button", "Button", "Button"], ["Help", "Cancel", "OK"])
+    self.BBx.Widgets[0].connect("btndown", self.RunDGEIHL)
+    self.BBx.Widgets[1].connect("btndown", self.RunDGEICC)
+    self.BBx.Widgets[2].connect("btndown", self.RunDGEIOK)
+    self.Box.add(self.LBi)
+    self.Box.add(self.EDq)
+    self.Box.add(self.EDg)
+    self.Box.add(self.EDn)
+    self.Box.add(self.EDN)
+    self.Box.add(self.BBx)
+    self.Dlg.setChild(self.Box)
+    self.Dlg.show()
+  def RunDGEIHL(self, ev = None):
+    webbrowser.open_new_tab(MANDIR+MANPREF+MANHELP[2]+MANSUFF)
+  def RunDGEICC(self, ev = None):
+    self.Dlg.close()
+    del self.Dlg
+  def RunDGEIOK(self, ev = None):
+    uimv = self.LBi.retData()
+    OK = True
+    OK = OK and len(uimv)
+    OK = OK and self.EDq.valiData(1, 1)
+    OK = OK and self.EDg.valiData(1, 1)
+    OK = OK and self.EDn.valiData(1, 1)
+    OK = OK and self.EDN.valiData(1, 1)
+    if not(OK): return
+    qres = abs(int(self.EDq.retData()))
+    gres = abs(int(self.EDg.retData()))
+    nres = abs(int(self.EDn.retData()))
+    nmax = abs(int(self.EDN.retData()))
+    self.Dlg.close()
+    del self.Dlg
+    _X = [[]] * len(uimv)
+    for i in range(len(uimv)):
+      _X[i] = nanravel(self.X[uimv[i]])
+    self.dgei = BQA([1, nmax])
+    self.dgei.set_data(_X, self.e)
+    _pgb = pgb()
+    self.nres = nres
+    self.qres = qres
+    self.gres = gres
+    self.dgei.dgei(nres, qres, gres, pgb=_pgb)
+    _pgb.close()
+    self.hatn = self.dgei.hatn
+    self.hatq = self.dgei.hatq * self.pol
+    self.hatg = self.dgei.hatg
+    self.hatv = self.dgei.hatv
+    self.hatl = self.dgei.hatl
+    self.hate = self.dgei.hate
+    self.hata = np.NaN
+    self.hats = self.dgei.hatp
+    self.hatr = self.hatn * self.hatq
+    self.hatvr = QLV(np.abs(self.mn), self.hate, self.hatn, self.hatg, abs(self.hatl), self.hata)
+    self.PN = discprob.mass(self.dgei.marg_n.prob, [np.ravel(self.dgei.marg_n.vals['n'])])
+    print(self.dgei.marg_n.vals['n'])
+    print(self.dgei.marg_n.prob)
+    self.PQ = discprob.mass(self.dgei.marg_q.prob, [np.ravel(self.dgei.marg_q.vals['q'])])
+    self.PG = discprob.mass(self.dgei.marg_g.prob, [np.ravel(self.dgei.marg_g.vals['g'])])
+    self.PV = discprob.mass(self.dgei.marg_g.prob, [1./np.sqrt(np.ravel(self.dgei.marg_g.vals['g']))])
     self.clrGUI()
     self.iniGUI().show()
   def PlotHist(self, ev = None, bw = None):
