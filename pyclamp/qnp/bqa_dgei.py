@@ -2,6 +2,12 @@ import numpy as np
 import probayes as pb
 import scipy as sp
 import scipy.stats
+try:
+  import scipy.misc
+  comb = scipy.misc.comb
+except AttributeError:
+  import scipy.special
+  comb = scipy.special.comb
 import tqdm
 import multiprocessing
 from joblib import Parallel, delayed
@@ -58,14 +64,14 @@ def binomial(n, p, axis):
   I = list(range(n+1))
   logp = np.log(p)
   log1mp = np.log(1-p)
-  lbc = np.log(scipy.misc.comb(n, np.arange(n+1), exact=False, repetition=False))
+  lbc = np.log(comb(n, np.arange(n+1), exact=False, repetition=False))
   B = Parallel(n_jobs=CONCURRENCY, prefer="threads")(
                delayed(_binomial)(i, n, lbc, logp ,log1mp) for i in I)
   return np.concatenate(B, axis=axis)
 
 #-------------------------------------------------------------------------------
 def binopmf(i, n, p, _logp=None, _log1mp=None, _con_axis=1):
-  lbc = np.log(scipy.misc.comb(int(n), i, exact=False, repetition=False))
+  lbc = np.log(comb(int(n), i, exact=False, repetition=False))
   return np.exp(lbc + np.array(i, dtype=float) * np.log(p) \
                     + np.array(n - i, dtype=float) * np.log(1-p))
 

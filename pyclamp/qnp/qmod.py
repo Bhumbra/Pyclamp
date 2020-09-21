@@ -1421,8 +1421,6 @@ class Qmodl (qmodl): # A pyqtgraph front-end for qmodl
     self.hatr = self.hatn * self.hatq
     self.hatvr = QLV(np.abs(self.mn), self.hate, self.hatn, self.hatg, abs(self.hatl), self.hata)
     self.PN = discprob.mass(self.dgei.marg_n.prob, [np.ravel(self.dgei.marg_n.vals['n'])])
-    print(self.dgei.marg_n.vals['n'])
-    print(self.dgei.marg_n.prob)
     self.PQ = discprob.mass(self.dgei.marg_q.prob, [np.ravel(self.dgei.marg_q.vals['q'])])
     self.PG = discprob.mass(self.dgei.marg_g.prob, [np.ravel(self.dgei.marg_g.vals['g'])])
     self.PV = discprob.mass(self.dgei.marg_g.prob, [1./np.sqrt(np.ravel(self.dgei.marg_g.vals['g']))])
