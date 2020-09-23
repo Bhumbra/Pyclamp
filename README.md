@@ -39,14 +39,6 @@ If this fails, check your Python version is up to date.
 ```sh
 (virtual_env) $ ./run_pyclamp
 ```
-
-Help options are available, and can be used to display all plots:
-
-```sh
-(virtual_env) $ python3 main/model_data.py -h
-(virtual_env) $ python3 main/model_data.py --show-hist=True --show-scat=True
-```
-
 ## Removing:
 
 After finishing with the package, the data and dependencies can be removed:
