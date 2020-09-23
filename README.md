@@ -41,7 +41,7 @@ If this fails, check your Python version is up to date.
 ```
 ## Removing:
 
-After finishing with the package, the data and dependencies can be removed:
+After finishing with the package, the dependencies can be removed:
 
 ```sh
 (virtual_env) $ deactivate
