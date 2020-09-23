@@ -14,8 +14,7 @@ from pyclamp.dsp.fpfunc import *
 from pyclamp.dsp.iofunc import *
 from pyclamp.qnp.bqa_dgei import BQA
 import pyclamp.dsp.discprob as discprob
-from PyQt4 import QtGui
-from PyQt4 import QtCore
+from PyQt5 import QtCore
 from pyclamp.gui.pgb import pgb
 import pyclamp.gui.lbwgui as lbw
 import pyqtgraph as pg

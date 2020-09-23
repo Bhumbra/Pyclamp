@@ -15,8 +15,9 @@ if DISPLAY is None:
   QtGui = None
   QAPP = None
 else:
-  from PyQt4 import QtGui
-  QAPP = QtGui.QApplication
+  from PyQt5 import QtWidgets
+  from PyQt5 import QtCore
+  QAPP = QtWidgets.QApplication
 
 def ttysize(spec = 'stty size'):
   rc = os.popen(spec, 'r').read().split()
@@ -254,13 +255,14 @@ class qpgb (object):
     self.rqt = self.prc._import('PyQt4.QtGui')
     self.dlg = self.rqt.QProgressDialog(self.title, self.cantext, self.minm, self.maxm)
     '''
-    self.dlg = QtGui.QProgressDialog(self.title, self.cantext, self.minm, self.maxm)
+    self.dlg = QtWidgets.QProgressDialog(self.title, self.cantext, self.minm, self.maxm)
+    self.dlg.setWindowModality(QtCore.Qt.WindowModal)
     #if self.cancelfunc is None: self.dlg.setCancelButton(0)
     self.set(0) # for some reason a zero-call is needed to kick-start it to appear
     self.show()
   def show(self):
     if self.dlg is None: return
-    self.dlg.show()
+    #self.dlg.show()
   def set(self, x = 1, *args):
     t = time()
     if self.lomx or x == 0 or x == self.maxd:

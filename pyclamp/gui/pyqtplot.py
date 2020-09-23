@@ -13,7 +13,7 @@ except ImportError:
   MeshData = None
 
 import subprocess
-import PyQt4
+import PyQt5
 from pyqtgraph.Qt import QtGui, QtCore
 from pyqtgraph.dockarea import DockArea, Dock
 import pyqtgraph.opengl as gl # ImportError means python-opengl is missing

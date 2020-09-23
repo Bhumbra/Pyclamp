@@ -17,24 +17,9 @@ def use(_LBWUSE = None):
   except NameError:
     LBWUSE = _LBWUSE.lower()
 
-try: # A PySide option
-  '''
-  from PySide import QtGui
-  from PySide import QtCore
-  QDirection = QtGui.QBoxLayout.Direction
-  '''
-  from PyQt4 import QtGui
-  from PyQt4 import QtCore
-  QDirection = QtGui.QBoxLayout
-except ImportError:
-  from PyQt4 import QtGui
-  from PyQt4 import QtCore
-  QDirection = QtGui.QBoxLayout
-
-try:
-  import wx
-except ImportError:
-  pass
+from PyQt5 import QtGui
+from PyQt5 import QtCore
+from PyQt5 import QtWidgets
 
 class qtKeys: # code to handle Qwidget-specific functions
   Wid = None
@@ -42,16 +27,15 @@ class qtKeys: # code to handle Qwidget-specific functions
   FWidget = None
   Parent = None
   def __init__(self):
-    self.widget = {'base': QtGui.QWidget, 'panel': QtGui.QFrame, 'label': QtGui.QLabel, 'edit': QtGui.QLineEdit,
-        'listbox':QtGui.QListWidget, 'combobox': QtGui.QComboBox, 'button':QtGui.QPushButton, 'box': QtGui.QBoxLayout,
-        'groupbox': QtGui.QBoxLayout, 'radiobutton':QtGui.QRadioButton, 'buttongroup': QtGui.QButtonGroup, 'labelbox':
-        QtGui.QGroupBox, 'frame': QtGui.QFrame, 'dlgmess':QtGui.QMessageBox, 'dlgform':
-        QtGui.QDialog, 'form': QtGui.QMainWindow, 'mainform': QtGui.QMainWindow, 'childarea':QtGui.QMdiArea,
-        'childform':QtGui.QMdiSubWindow, 'app': QtGui.QApplication}
-    self.events = {'btndown':QtCore.SIGNAL("clicked()")}
+    self.widget = {'base': QtWidgets.QWidget, 'panel': QtWidgets.QFrame, 'label': QtWidgets.QLabel, 'edit': QtWidgets.QLineEdit,
+        'listbox':QtWidgets.QListWidget, 'combobox': QtWidgets.QComboBox, 'button':QtWidgets.QPushButton, 'box': QtWidgets.QBoxLayout,
+        'groupbox': QtWidgets.QBoxLayout, 'radiobutton':QtWidgets.QRadioButton, 'buttongroup': QtWidgets.QButtonGroup, 'labelbox':
+        QtWidgets.QGroupBox, 'frame': QtWidgets.QFrame, 'dlgmess':QtWidgets.QMessageBox, 'dlgform':
+        QtWidgets.QDialog, 'form': QtWidgets.QMainWindow, 'mainform': QtWidgets.QMainWindow, 'childarea':QtWidgets.QMdiArea,
+        'childform':QtWidgets.QMdiSubWindow, 'app': QtWidgets.QApplication}
     self.nargin1 = ['box', 'groupbox']
     self.nargin2 = ['checkbox']
-    self.direction = {0 : QDirection.LeftToRight, 1 : QDirection.TopToBottom}
+    self.direction = {0 : QtWidgets.QBoxLayout.LeftToRight, 1 : QtWidgets.QBoxLayout.TopToBottom}
   def setParent(self, parent = None):
     if parent is not None: self.Parent = parent
   def setChild(self, child = None):
@@ -59,7 +43,7 @@ class qtKeys: # code to handle Qwidget-specific functions
     if self.Wid != 'mainform': return
     self.FWidget.setCentralWidget(child)
   def addChild(self, label = ''):
-    return self.Widget.addSubWindow(QtGui.QLabel(label))
+    return self.Widget.addSubWindow(QtWidgets.QLabel(label))
   def setWidget(self, wid = None, *args):
     if (wid is None): return
     self.Wid = wid
@@ -169,17 +153,17 @@ class qtKeys: # code to handle Qwidget-specific functions
   def boxDir(self, vertical):
     return self.direction[vertical]
   def connect(self, obj, evt, fun):
-    return QtCore.QObject.connect(obj, self.events[evt.lower()], fun)
+    return obj.clicked.connect(fun)
   def setMode(self, mode = None, data = None):
     if self.Wid is None or self.Widget is None or mode is None: return
     if self.Wid == 'box' or self.Wid == 'groupbox':
       self.Widget.setDirection(self.boxDir(mode))
     elif self.Wid == 'listbox':
-      if mode == 0: self.Widget.setSelectionMode(QtGui.QAbstractItemView.NoSelection)
-      elif mode == 1: self.Widget.setSelectionMode(QtGui.QAbstractItemView.SingleSelection)
-      elif mode == 2: self.Widget.setSelectionMode(QtGui.QAbstractItemView.ContiguousSelection)
-      elif mode == 3: self.Widget.setSelectionMode(QtGui.QAbstractItemView.MultiSelection)
-      elif mode == 4: self.Widget.setSelectionMode(QtGui.QAbstractItemView.ExtendedSelection)
+      if mode == 0: self.Widget.setSelectionMode(QtWidgets.QAbstractItemView.NoSelection)
+      elif mode == 1: self.Widget.setSelectionMode(QtWidgets.QAbstractItemView.SingleSelection)
+      elif mode == 2: self.Widget.setSelectionMode(QtWidgets.QAbstractItemView.ContiguousSelection)
+      elif mode == 3: self.Widget.setSelectionMode(QtWidgets.QAbstractItemView.MultiSelection)
+      elif mode == 4: self.Widget.setSelectionMode(QtWidgets.QAbstractItemView.ExtendedSelection)
     if data is not None:
       self.setData(data)
   def show(self):
@@ -194,163 +178,24 @@ class qtKeys: # code to handle Qwidget-specific functions
   def loop(self):
     self.Widget.exec_()
   def dlgFileOpen(self, titl = "Open File", path = "", filt = "*.*"):
-    return QtGui.QFileDialog.getOpenFileName(self.Widget, self.Widget.tr(titl), path, self.Widget.tr(filt))
-  def dlgFileSave(self, titl = "Save File", path = "", filt = "*.*", confirmoverwrite = True):
-    if confirmoverwrite:
-      return QtGui.QFileDialog.getSaveFileName(self.Widget, self.Widget.tr(titl), path, self.Widget.tr(filt))
-    else:
-      return QtGui.QFileDialog.getOpenFileName(self.Widget, self.Widget.tr(titl), path, self.Widget.tr(filt))
-
-class wxKeys: # code to handle wx-specific functions
-  Wid = None
-  Widget = None
-  FWidget = None
-  Parent = None
-  def __init__(self):
-    self.widget = {'base': wx.Panel, 'panel': wx.Panel, 'label': wx.StaticText, 'edit': wx.TextCtrl, 'listbox':wx.ListBox, 'combobox': wx.ComboBox, 'button':wx.Button, 'box': wx.BoxSizer, 'groupbox': wx.StaticBoxSizer, 'buttongroup': wx.RadioButton, 'labelbox': wx.StaticBox, 'frame': wx.Frame, 'dlgmess':wx.MessageDialog, 'dlgform': wx.Frame, 'fopenDlg': wx.FileDialog, 'mainform': wx.Frame, 'app': wx.App}
-    self.events = {'btndown':wx.EVT_BUTTON}
-    self.nargin1 = ['box', 'dlgmess']
-    self.nargin2 = [None]
-    self.direction = {0 : wx.HORIZONTAL, 1 : wx.VERTICAL}
-  def setParent(self, parent = None):
-    if parent != None:
-      self.Parent = parent
-  def setWidget(self, wid = None, *args):
-    if (wid is None): return
-    self.Wid = wid
-    if len(args):
-      if self.Wid == 'box' or self.Wid == 'groupbox':
-        self.Widget = self.widget[self.Wid](self.boxDir(args[0]))
-      elif self.Wid == "dlgmess":
-        self.Widget = self.widget[self.Wid](None, args[0])
-        self.Widget.ShowModal()
-      else:
-        self.Widget = self.widget[self.Wid](args)
-    else:
-      if self.Wid == 'app':
-        self.Widget = self.widget[self.Wid](redirect=True)
-      elif self.Wid.count("form"):
-          self.FWidget = self.widget[self.Wid](None, -1)
-          if self.Wid == "mainform":
-            self.Widget = self.widget['base'](self.FWidget)
-          else:
-            self.Widget = self.FWidget
-      else:
-        if self.Wid == 'box' or self.Wid == 'groupbox':
-          self.Widget = self.widget[self.Wid](self.boxDir(0))
-        elif self.Wid == 'labelbox':
-          self.FWidget = self.widget['labelbox'](parent = self.Parent)
-          self.Widget = self.widget['groupbox'](self.FWidget)
-        elif self.Wid == 'combobox':
-          self.Widget = self.widget[self.Wid](parent=self.Parent, style=wx.CB_READONLY)
-        elif self.Wid == 'listbox':
-          self.Widget = self.widget[self.Wid](parent=self.Parent, style=wx.LB_EXTENDED)
-        else:
-          self.Widget = self.widget[self.Wid](parent=self.Parent)
-    return self.Widget, self.FWidget
-  def onsize(self, event):
-    self.resizeflag = True
-  def onidle(self, event):
-    if self.resizeflag:
-      self.resizeflag = False
-      pixels = tuple( self.Parent.GetClientSize() )
-      self.Widget.SetSize(pixels)
-      self.Canvas.SetSize(pixels)
-      self.FWidget.set_size_inches( float(pixels[0])/self.FWidget.get_dpi(),
-                                    float(pixels[1])/self.FWidget.get_dpi())
-  def setData(self, data):
-    if self.Wid is None or self.Widget is None or data is None: return
-    if self.Wid == 'label':
-      self.Widget.SetLabel(data)
-    if self.Wid == 'edit':
-      self.Widget.SetValue(data)
-    elif self.Wid == 'labelbox':
-      self.FWidget.SetLabel(data)
-    elif self.Wid == 'button':
-      self.Widget.SetLabel(data)
-    elif self.Wid == "listbox":
-      self.Widget.SetSelection(int(data))
-    elif self.Wid == "combobox":
-      self.Widget.SetSelection(int(data))
-    elif self.Wid == "dlgmess":
-      self.Widget.SetLabel(data)
-    elif self.Wid == "dlgform":
-      self.FWidget.SetTitle(data)
-    elif self.Wid == "mainform":
-      self.FWidget.SetTitle(data)
-  def setOpts(self, opts):
-    if self.Wid is None or self.Widget is None or opts is None: return
-    if self.Wid == 'listbox':
-      self.Widget.SetItems(opts)
-    elif self.Wid == 'combobox':
-      self.Widget.SetItems(opts)
-  def retData(self):
-    if self.Wid is None or self.Widget is None: return None
-    if self.Wid == "edit":
-      return str(self.Widget.GetValue())
-    elif self.Wid == "listbox":
-      return list(self.Widget.GetSelections())
-    elif self.Wid == "combobox":
-      return self.Widget.GetCurrentSelection()
-  def addWidget(self, child):
-    if self.Wid == 'box' or self.Wid == 'groupbox':
-      self.Widget.Add(child, wx.EXPAND)
-    else:
-      self.Widget.Add(child)
-  def setBox(self, child):
-    if self.Wid == 'labelbox':
-      self.Widget.Add(child)
-    else:
-      self.Widget.SetSizer(child)
-      w, h = child.GetMinSize()
-      self.Widget.SetSize( (w+10, h+25) )
-  def addBox(self, child):
-    self.Widget.Add(child)
-  def boxDir(self, vertical):
-    return self.direction[vertical]
-  def connect(self, obj, evt, fun):
-    return self.Parent.Bind(self.events[evt.lower()], fun, obj)
-  def setMode(self, mode = None, data = None):
-    if self.Wid is None or self.Widget is None or mode is None: return
-    if self.Wid == 'box' or self.Wid == 'groupbox':
-      self.Widget.SetOrientation(self.boxDir(mode))
-    elif self.Wid == 'listbox':
-      if mode == 0: self.Widget.SetWindowStyle(style = wx.LB_SINGLE)
-      elif mode == 1: self.Widget.SetWindowStyle(style = wx.LB_SINGLE)
-      elif mode == 2: self.Widget.SetWindowStyle(style = wx.LB_EXTENDED)
-      elif mode == 3: self.Widget.SetWindowStyle(style = wx.LB_MULTIPLE)
-      elif mode == 4: self.Widget.SetWindowStyle(style = wx.LB_EXTENDED)
-    if data is None: return
-    self.setData(data)
-  def show(self):
-    if self.Wid.count("form"):
-      self.FWidget.Show(True)
-    else:
-      self.Widget.Show()
-  def close(self):
-    if not(self.Wid.count("form")): return
-    if self.Wid == "dlgform":
-      self.Widget.Destroy()
-  def loop(self):
-    self.Widget.MainLoop()
-  def dlgFileOpen(self, titl = "Open File", path = "", filt = "*.*"):
-    dlg = wx.FileDialog(self.Widget, titl, path, "", filt, wx.OPEN)
-    pf = None
-    if dlg.ShowModal() == wx.ID_OK:
-      filename = dlg.GetFilename()
-      dirname = dlg.GetDirectory()
-      pf = os.path.join(dirname, filename)
-      dlg.Destroy()
-    return pf
-  def dlgFileSave(self, titl = "Save File", path = "", filt = "*.*", confirmoverwrite = True): # last parameter ignored
-    dlg = wx.FileDialog(self.Widget, titl, path, "", filt, wx.OPEN)
-    pf = None
-    if dlg.ShowModal() == wx.ID_OK:
-      filename = dlg.GetFilename()
-      dirname = dlg.GetDirectory()
-      pf = os.path.join(dirname, filename)
-      dlg.Destroy()
-    return pf
+    filename = QtWidgets.QFileDialog.getOpenFileName(self.Widget, self.Widget.tr(titl), path, self.Widget.tr(filt))
+    if isinstance(filename, str):
+      return filename
+    if isinstance(filename, tuple) and len(filename) == 2:
+      return filename[0]
+    return filename
+  def dlgFileSave(self, titl="Save File", path="", filt="*.*", confirmoverwrite=True):
+    kwds = {} if confirmoverwrite else {'options': QtWidgets.QFileDialog.DontConfirmOverwrite}
+    filename = QtWidgets.QFileDialog.getSaveFileName(self.Widget, 
+                                                     self.Widget.tr(titl),
+                                                     path, 
+                                                     self.Widget.tr(filt),
+                                                     **kwds)
+    if isinstance(filename, str):
+      return filename
+    if isinstance(filename, tuple) and len(filename) == 2:
+      return filename[0]
+    return filename
 
 class LBWidget: # A box containing a widget and label
   Wid = None

@@ -1,12 +1,13 @@
-from pgb import *
+import PyQt5
+from pyclamp.gui.pgb import *
 from time import time, sleep
 
 
 n1 = 10
 n2 = 20
 dt = 0.05
-if DISPLAY: qapp = QAPP([])
-
+if DISPLAY: qapp = QAPP([""])
+    
 
 #'''
 pb = pgb()

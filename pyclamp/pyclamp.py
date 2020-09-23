@@ -11,7 +11,7 @@ DEFAULT_TDF_EXTENSION = ".tdf"
 
 import gc
 import webbrowser
-from PyQt4 import QtGui
+from PyQt5 import QtGui
 import numpy as np
 import pyclamp.dsp.sifunc as sifunc
 import pyclamp.dsp.wffunc as wffunc
@@ -579,7 +579,7 @@ class pyclamp:              # back-end
       opdn = ipdn.replace('data', 'analyses')
       if not(os.path.exists(opdn)):
         opdn = ipdn
-    if opfn is None: 
+    if opfn is None or not opdn: 
       opfn = ipfn + DEFAULT_TDF_EXTENSION
     if opdn[-1] != '/':
       opdn += '/'

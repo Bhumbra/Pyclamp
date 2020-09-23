@@ -1,4 +1,4 @@
-import lbwgui as lbw
+import pyclamp.gui.lbwgui as lbw
 
 lbw.use('qt')
 

@@ -1,10 +1,8 @@
-import pyqtplot as pq
+import PyQt5
+import pyclamp.gui.pyqtplot as pq
 import pyqtgraph as pg
-from fpanal import *
+from pyclamp.dsp.fpanal import *
 from time import *
-import abf 
-import inspect
-from pyqtgraph.Qt import QtGui, QtCore
 import numpy as np
 
 x = np.linspace(-np.pi, np.pi, 100)
