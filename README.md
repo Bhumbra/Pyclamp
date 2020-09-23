@@ -2,9 +2,9 @@
 
 ## Installation:
 
-This code is intended for a GNU/Linux environment, with a /tmp/ directory.
-It has not been tested outside GNU/Linux. A Python version >= 3.6 is required. 
-Since 13th September 2020, Python 3.5 reached its end of life and won't work.
+This code is intended for a GNU/Linux environment. It has not been tested 
+outside GNU/Linux. A version of Python version >= 3.6 is required. Since 
+13th September 2020, Python 3.5 reached its end of life and won't work.
 A network connection is required for downloading dependencies and the data.
 
 It is recommended for installers to create a Python virtual environment for 
