@@ -1,0 +1,9 @@
+numpy
+scipy
+xlrd
+PyQt5
+PyOpenGL
+pyqtgraph
+joblib
+tqdm
+probayes>=0.0.3

@@ -3,46 +3,38 @@ DEVMODE = True # Set to `False' for excluding the corrupting effects of bug-ridd
 import sys
 import os
 CWDIR = os.getcwd()
-GENDIR = '../gen/'
-QADIR = '../quantal/'
 MANDIR = 'man'
 MANPREF = "pyclamp"
 MANSUFF = ".html"
 MANHELP = [""] 
-USEMP = False # flag to use use multiprocessing
 DEFAULT_TDF_EXTENSION = ".tdf"
- 
-sys.path.append(GENDIR)
-sys.path.append(QADIR)
 
 import gc
 import webbrowser
-import qmod
-import lbwgui as lbw
-import multio as mio
-import pyplot
-import pydisc
-import pysumm
-import sifunc
-import wffunc
-import fpanal
-import wfanal
-import iofunc
-import channel
+from PyQt5 import QtGui
 import numpy as np
-from PyQt4 import QtGui
+import pyclamp.dsp.sifunc as sifunc
+import pyclamp.dsp.wffunc as wffunc
+import pyclamp.dsp.fpanal as fpanal
+import pyclamp.dsp.wfanal as wfanal
+import pyclamp.dsp.iofunc as iofunc
+import pyclamp.dsp.channel as channel
 
-from pyqtplot import *
-from dtypes import *
-from pgb import *
-from lsfunc import *
-from fpfunc import *
-from strfunc import *
-from tdf import *
-from tpfunc import *
+from pyclamp.qnp.qmod import Qmodl
+import pyclamp.gui.lbwgui as lbw
+import pyclamp.dsp.multio as mio
+from pyclamp.gui.pyplot import pywav
+import pyclamp.gui.pydisc as pydisc
+from pyclamp.gui.pysumm import pysumm
 
-if USEMP:
-  import multiprocessing as mp
+from pyclamp.gui.pyqtplot import *
+from pyclamp.gui.pgb import *
+from pyclamp.dsp.dtypes import *
+from pyclamp.dsp.lsfunc import *
+from pyclamp.dsp.fpfunc import *
+from pyclamp.dsp.strfunc import *
+from pyclamp.dsp.tdf import *
+from pyclamp.dsp.tpfunc import *
 
 def main():                  # OS entry point 
   return PyClamp()  
@@ -110,14 +102,14 @@ class PyClamp:          # front-end controller
   def openAnal(self, ev = None):
     self.Child = self.Area.addChild('Analysis File')
     self.Children.append(self.Child)
-    self.child = qmod.Qmodl()
+    self.child = Qmodl()
     self.children.append(self.child)
     self.child.iniForm(self.Child)
     self.child.openFile()
   def openResu(self, ev = None):
     self.Child = self.Area.addChild('Analysis File')
     self.Children.append(self.Child)
-    self.child = qmod.Qmodl()
+    self.child = Qmodl()
     self.children.append(self.child)
     self.child.iniForm(self.Child)
     self.child.Archive()
@@ -136,7 +128,6 @@ def mpmfilioGUI(q):
   q.put(mio.mfilioGUI())
 
 class pyclamp:              # back-end
-  usemp = USEMP
   _Data = None
   mfi = None
   P = None
@@ -240,13 +231,7 @@ class pyclamp:              # back-end
   def readIntData(self):
     if self.DataDir is None or self.NumDataFiles == 0: return
     if self.nChan == 0 or self.SiGnOf is None: return
-    if self.usemp:
-      self.Q = mp.Queue()
-      self.P = mp.Process(target=mpmfilio, args=(self.Q,))
-      self.P.start()
-      self.mfi = self.Q.get()
-    else:
-      self.mfi = mio.mfilio()
+    self.mfi = mio.mfilio()
     self.mfi.readData(self.DataFiles, self.Channels, self.DataDir)
     self.IntData = self.mfi.Data
     self.Onsets = np.copy(self.mfi.Onsets)
@@ -594,7 +579,7 @@ class pyclamp:              # back-end
       opdn = ipdn.replace('data', 'analyses')
       if not(os.path.exists(opdn)):
         opdn = ipdn
-    if opfn is None: 
+    if opfn is None or not opdn: 
       opfn = ipfn + DEFAULT_TDF_EXTENSION
     if opdn[-1] != '/':
       opdn += '/'
@@ -850,13 +835,7 @@ class Pyclamp (pyclamp): # front end
     if self.Form is None: return
     self.Form.close()
   def readData(self):
-    if self.usemp:
-      self.Q = mp.Queue()
-      self.P = mp.Process(target=mpmfilioGUI, args=(self.Q,))
-      self.P.start()
-      self.Dlg = self.Q.get()
-    else:
-      self.Dlg = mio.mfilioGUI()
+    self.Dlg = mio.mfilioGUI()
     self.Dlg.Open(self.readDataOK, self.readDataCC)
   def readDataOK(self, event = None):
     dlgIP = self.Dlg.CloseDlg(1)    
@@ -938,7 +917,7 @@ class Pyclamp (pyclamp): # front end
     _Active = _active
     if _Active is None: _Active = self.active
     if self.SetAnal is None:
-      self.SetAnal = pyplot.pywav(self.Data, self.DataInfo, self.onsets, _Active)
+      self.SetAnal = pywav(self.Data, self.DataInfo, self.onsets, _Active)
       self.SetAnal.setPlots(parent = self.Area)
       self.SetMenus()
       self.SetButtons()
@@ -1516,7 +1495,7 @@ class Pyclamp (pyclamp): # front end
     uiOnsets = self.onsets[self.active[0]] if _uiOnsets is None else _uiOnsets
     uiOnes = np.ones(len(uiSelected), dtype = bool)
     uiZeros = np.zeros(len(uiSelected), dtype = bool)
-    self.SetSumm = pysumm.pysumm()
+    self.SetSumm = pysumm()
     self.SetSumm.setData(uiData, [self.DataInfo[self.uiID].samplint, 1., 0.], uiOnsets, 
         [uiOnes, uiSelected, uiZeros], self.table)
     self.SetSumm.setDoneFuncs([self.TableOK, self.TableCC])
@@ -1994,4 +1973,3 @@ class Pyclamp (pyclamp): # front end
     for _pw in self.SetAnal.pw:
       _pw.setactive(self.active)
       _pw.setWave()
-
