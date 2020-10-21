@@ -152,6 +152,7 @@ def readQfile(pf = "", spec = None): # an attempt of a universal import function
   ipfe = ipfe.lower()
   _path = ipdn
   _stem = ipfs
+
   # Handle easiest (or rather least-flexible) case - an Excel file
   if ipfe == ".xls" or ipfe == ".xlsx":
     _Data, _Labels = readXLData(pf, 0, True) # this automatically tranposes and replaces strings with NaNs
@@ -176,13 +177,15 @@ def readQfile(pf = "", spec = None): # an attempt of a universal import function
       for i in range(len(_Data)):
         _Labels[i] = '#' + str(i)
     return _Labels, _Data
+
   # Otherwise it's a tab-delimited file
   _Data = readDTFile(pf)
+
   # Check if result file
-  rsltfile = True
-  lend = len(_Data)
-  lend2 = lend//2
-  if ipfe == ".tdf" or ipfe == ".tab": # *.tab delimited file extenstion
+  rsltfile = ipfe == '.tdf'
+  if rsltfile:
+    lend = len(_Data)
+    lend2 = lend//2
     if lend > 0: # has multiple pages
       if lend % 2 == 0: # of even number
         for i in range(lend2): # check for tuple/list alternation
@@ -195,22 +198,18 @@ def readQfile(pf = "", spec = None): # an attempt of a universal import function
       rsltfile = False
   else:
     rsltfile = False
-  if not(rsltfile):
+  
+  if not rsltfile:
     _Data = readDTData(_Data)
     while nDim(_Data) > 2 and len(_Data) == 1:
       _Data = _Data[0]
-    _Labels = [''] * len(_Data)
-    heads = True
-    for _data in _Data:
-      if type(_data) is not list: heads = False
-    if heads:
-      for i in range(len(_Data)):
-        _Labels[i] = _Data[i][0]
-        _Data[i] = _Data[i][1:]
-    else:
-      for i in range(len(_Data)):
-        _Labels[i] = '#' + str(i)
+    _Labels = [None] * len(_Data)
+    for i in range(len(_Data)):
+      _Labels[i] = '#{}'.format(i)
+      if isinstance(_Data, list):
+        _Data[i] = np.ravel(_Data[i])
     return _Labels, _Data
+
   # Read result file
   if type(spec) is bool: spec = 'MWD'
   if spec is None: spec = 'MWD'
