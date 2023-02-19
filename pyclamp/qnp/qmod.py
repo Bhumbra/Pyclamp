@@ -1418,10 +1418,10 @@ class Qmodl (qmodl): # A pyqtgraph front-end for qmodl
     self.hats = self.dgei.hatp
     self.hatr = self.hatn * self.hatq
     self.hatvr = QLV(np.abs(self.mn), self.hate, self.hatn, self.hatg, abs(self.hatl), self.hata)
-    self.PN = discprob.mass(self.dgei.marg_n.prob, [np.ravel(self.dgei.marg_n.vals['n'])])
-    self.PQ = discprob.mass(self.dgei.marg_q.prob, [np.ravel(self.dgei.marg_q.vals['q'])])
-    self.PG = discprob.mass(self.dgei.marg_g.prob, [np.ravel(self.dgei.marg_g.vals['g'])])
-    self.PV = discprob.mass(self.dgei.marg_g.prob, [1./np.sqrt(np.ravel(self.dgei.marg_g.vals['g']))])
+    self.PN = discprob.mass(self.dgei.marg_n.prob, [np.ravel(self.dgei.marg_n['n'])])
+    self.PQ = discprob.mass(self.dgei.marg_q.prob, [np.ravel(self.dgei.marg_q['q'])])
+    self.PG = discprob.mass(self.dgei.marg_g.prob, [np.ravel(self.dgei.marg_g['g'])])
+    self.PV = discprob.mass(self.dgei.marg_g.prob, [1./np.sqrt(np.ravel(self.dgei.marg_g['g']))])
     self.clrGUI()
     self.iniGUI().show()
   def PlotHist(self, ev = None, bw = None):
@@ -1464,7 +1464,9 @@ class Qmodl (qmodl): # A pyqtgraph front-end for qmodl
       if len(_opfn):
         writeDTFile(_opfn, _T)
   def ExpHist(self, ev = None):
-    self.lbt = ['Histograms', 'Projected QLF', 'Marginal release probabilities']
+    self.lbt = ['Histograms', 'Projected QLF']
+    if self.PR is not None:
+      self.lbt.append('Marginal release probabilities')
     if np.isnan(self.hatn): self.lbt = self.lbt[:1]
     self.Dlg = lbw.LBWidget(None, None, None, 'dlgform', self.pf)
     self.Box = lbw.LBWidget(self.Dlg, None, 1)
@@ -1491,13 +1493,17 @@ class Qmodl (qmodl): # A pyqtgraph front-end for qmodl
       HS.append(xY2list(self.s, self.PMS.P, 'Probability', Ylbl))
     self.Export(HS, '_hs')
   def ExpMarg1D(self, ev = None):
-    self.lbt = ['r', 'q', 'gamma', 'alpha'] if self.modelBeta else ['r', 'q', 'gamma']
+    self.lb0 = ['r', 'q', 'gamma', 'alpha'] if self.modelBeta else ['r', 'q', 'gamma']
+    self.lb1 = ['CV', 'n']
+    if self.PR is None:
+      self.lb0 = ['n', 'q', 'gamma']
+      self.lb1 = ['CV']
     self.Dlg = lbw.LBWidget(None, None, None, 'dlgform', self.pf)
     self.Box = lbw.LBWidget(self.Dlg, None, 1)
-    self.LB0 = lbw.LBWidget(self.Dlg, "Marginal selection", 1,"listbox", None, self.lbt)
-    self.LB0.setMode(3, range(len(self.lbt)))
-    self.LB1 = lbw.LBWidget(self.Dlg, "Derived marginal selection", 1,"listbox", None, ['CV', 'n'])
-    self.LB1.setMode(3, range(2))
+    self.LB0 = lbw.LBWidget(self.Dlg, "Marginal selection", 1,"listbox", None, self.lb0)
+    self.LB0.setMode(3, range(len(self.lb0)))
+    self.LB1 = lbw.LBWidget(self.Dlg, "Derived marginal selection", 1,"listbox", None, self.lb1)
+    self.LB1.setMode(3, range(len(self.lb1)))
     self.BBx = lbw.BWidgets(self.Dlg, 0, None, ["Button", "Button"], ["Help", "OK"])
     self.BBx.Widgets[0].connect("btndown", self.SetBinsHL)
     self.BBx.Widgets[1].connect("btndown", self.ExpMarg1DOK)
@@ -1512,10 +1518,18 @@ class Qmodl (qmodl): # A pyqtgraph front-end for qmodl
     self.Dlg.close()
     if not(len(ui0)) and not(len(ui1)): return
     lt = []
-    lb0 = [['r', 'P(r)'], ['q', 'P(q)'], ['gamma', 'P(gamma)'], ['alpha', 'P(alpha)']]
-    lb1 = [['CV', 'P(CV)'], ['n', 'P(n)']]
-    dt0 = [[self.PR.X[0], self.PR.P], [self.PQ.X[0], self.PQ.P], [self.PG.X[0], self.PG.P], [self.PA.X[0], self.PA.P]]
-    dt1 = [[self.PV.X[0], self.PV.P], [self.PN.X[0], self.PN.P]]
+    lb0 = [['n', 'P(n)'], ['q', 'P(q)'], ['gamma', 'P(gamma)']]
+    dt0 = [[self.PN.X[0], self.PN.P], [self.PQ.X[0], self.PQ.P], [self.PG.X[0], self.PG.P]]
+    lb1 = [['CV', 'P(CV)']]
+    dt1 = [[self.PV.X[0], self.PV.P]]
+    if self.PR is not None:
+      lb1 += lb0[0]
+      dt1 += dt0[0]
+      lb0 = ['r', 'P(r)'] + lb0[1:]
+      dt0 = [self.PR.X[0], self.PR.P] + dt0 
+      if self.modelBeta:
+        lb0 += ['alpha', 'P(alpha)']
+        dt0 += [self.PA.X[0], self.PA.P]
     M1 = []
     for i in range(4):
       if i in ui0:
