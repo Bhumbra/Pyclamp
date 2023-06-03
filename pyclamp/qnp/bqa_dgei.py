@@ -192,9 +192,9 @@ class BQA:
       nqlims = [np.minimum(nqlo, nqhi), np.maximum(nqlo, nqhi)]
     self.qlims = [np.min(nqlims)/np.max(self.nlims), np.max(nqlims)/np.min(self.nlims)]
     
-    self.x = pb.RV('x', (-np.inf, np.inf), vtype=float)
-    self.i = pb.RV('i', [0, self.num], vtype=int)
-    self.stats = pb.RJ(self.x, self.i)
+    self.x = pb.RV('x', (-np.inf, np.inf))
+    self.i = pb.RV('i', [0, self.num])
+    self.stats = pb.RF(self.x, self.i)
 
     self.xi = [[], []]
     for i, subdata in enumerate(self.data):
@@ -208,25 +208,25 @@ class BQA:
     nres = nres or self.nlims[1]
     nset = np.array(np.round(np.linspace(self.nlims[0], self.nlims[1], nres)),
                     dtype=int).tolist()
-    self.n = pb.RV('n', nset, vtype=int, pscale='log')
+    self.n = pb.RV('n', nset, pscale='log')
     self.n.set_prob(lambda x: 1./x)
-    self.q = pb.RV('q', self.qlims, vtype=float, pscale='log')
-    self.g = pb.RV('g', self.glims, vtype=float, pscale='log')
-    self.q.set_mfun((np.log, np.exp,))
-    self.g.set_mfun((np.log, np.exp,))
-    self.paras = pb.RJ(self.n, self.q, self.g)
-    self.model = pb.RF(self.stats, self.paras)
+    self.q = pb.RV('q', self.qlims, pscale='log')
+    self.g = pb.RV('g', self.glims, pscale='log')
+    self.q.set_ufun((np.log, np.exp,))
+    self.g.set_ufun((np.log, np.exp,))
+    self.paras = pb.RF(self.n, self.q, self.g)
+    self.model = pb.SD(self.stats, self.paras)
     self.model.set_prob(lqlf, eps=self.eps, pgb=pgb)
     call = {'x,i': self.xi, 'n':np.array(nset), 'q': {qres}, 'g': {gres}}
     ll = self.model(call)
     self.llx = ll.rescaled(np.complex(np.mean(ll.prob)))
-    I = np.ravel(self.llx.vals['i'])
+    I = np.ravel(self.llx['i'])
     u = np.unique(I).tolist()
     self.lli = [self.llx({'i':i}, keepdims=True) for i in u]
     self.ll = [ll.prod(['x', 'i']) for ll in self.lli]
     ll = tuple(self.ll)
     self.likelihood = pb.product(*ll)
-    vals = self.likelihood.ret_cond_vals()
+    vals = self.likelihood('cond')
     self.prior = self.paras(vals)
     return self.set_joint(self.prior * self.likelihood)
 
