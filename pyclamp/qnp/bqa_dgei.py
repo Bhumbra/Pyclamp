@@ -10,6 +10,7 @@ except AttributeError:
   comb = scipy.special.comb
 import tqdm
 import multiprocessing
+import h5py
 from joblib import Parallel, delayed
 
 NEARLY_ZERO = 1e-300
@@ -252,5 +253,40 @@ class BQA:
     self.hatp = np.maximum(np.minimum(hatp, np.max(self.plims)), np.min(self.plims))
     self.hate = self.eps
     return self.post
+
+#-------------------------------------------------------------------------------
+  def write_dgei(self, path):
+    if not self.joint:
+      raise ValueError("BQA has not yet been performed") 
+    serialised = pb.serialise(self.joint)
+    lims = {'n': np.atleast_1d(self.nlims),
+            'p': np.atleast_1d(self.plims),
+            'v': np.atleast_1d(self.vlims)}
+    data_eps = {str(i):self.data[i] for i in range(len(self.means))}
+    data_eps.update({'eps': np.array(self.eps)})
+    serialised.update({'bqa lims': lims})
+    serialised.update({'bqa data': data_eps})
+    return pb.write_serialised(path, serialised)
+
+#-------------------------------------------------------------------------------
+  @staticmethod
+  def read_dgei(path):
+    serialised, aux_dict = pb.read_serialised(path)
+    lims = aux_dict['bqa lims']
+    data_eps = aux_dict['bqa data']
+    nlims = np.array(lims['n']).tolist()
+    plims = np.array(lims['p']).tolist()
+    vlims = np.array(lims['v']).tolist()
+    eps = np.atleast_1d(data_eps.pop('eps')).tolist()[0]
+    num_cond = len(data_eps.keys())
+    data = [None] * num_cond
+    for key, val in data_eps.items():
+      data[int(key)] = np.array(val)
+    joint, = pb.deserialise(serialised)
+    vals = list(joint.values())[0]
+    bqa = BQA(nlims, plims, vlims)
+    bqa.set_data(data, eps)
+    bqa.set_joint(joint)
+    return bqa
 
 #-------------------------------------------------------------------------------

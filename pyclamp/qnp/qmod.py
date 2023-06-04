@@ -278,6 +278,7 @@ class qmodl:
     self.NX = 0
     self.res = 0
     self.nlims = None
+    self.dgei = None
     self.iniLabels()
     self.iniHatValues()
     self.setRes()
@@ -860,8 +861,36 @@ class qmodl:
     self.hatv = 1.0 / (np.sqrt(self.hatg) + mino)
     self.hats = np.array([mn_ / (self.hatr+mino) for mn_ in self.mn], dtype = float)
     self.hatvr= QLV(self.mn, self.hate, self.hatn, self.hatg, self.hatl, self.hata)
+
+  def runDGEI(self, nlims, _X, e, nres, qres, gres, _pgb=None):
+    self.dgei = BQA(nlims)
+    self.dgei.set_data(_X, self.e)
+    self.dgei.dgei(nres, qres, gres, pgb=_pgb)
+    if _pgb is not None:
+      _pgb.close()
+    self.postprocessDGEI()
+
+  def postprocessDGEI(self):
+    self.hatn = self.dgei.hatn
+    self.hatq = self.dgei.hatq * self.pol
+    self.hatg = self.dgei.hatg
+    self.hatv = self.dgei.hatv
+    self.hatl = self.dgei.hatl
+    self.hate = self.dgei.hate
+    self.hata = np.NaN
+    self.hats = self.dgei.hatp
+    self.hatr = self.hatn * self.hatq
+    self.hatvr = QLV(np.abs(self.mn), self.hate, self.hatn, self.hatg, abs(self.hatl), self.hata)
+    self.nres = self.dgei.marg_n['n'].size
+    self.qres = self.dgei.marg_q['q'].size
+    self.gres = self.dgei.marg_g['g'].size
+    self.PN = discprob.mass(self.dgei.marg_n.prob, [np.ravel(self.dgei.marg_n['n'])])
+    self.PQ = discprob.mass(self.dgei.marg_q.prob, [np.ravel(self.dgei.marg_q['q'])])
+    self.PG = discprob.mass(self.dgei.marg_g.prob, [np.ravel(self.dgei.marg_g['g'])])
+    self.PV = discprob.mass(self.dgei.marg_g.prob, [1./np.sqrt(np.ravel(self.dgei.marg_g['g']))])
+
   def archive(self, _arch = None):
-    # this function does different things depending on what _arch is and whether we have data (X)
+    # this function does different things depending on what _arch is whether we have data (X).
     #
     # If we have data (self.X is not None):
     # _arch is None writes results to self.arch
@@ -878,15 +907,27 @@ class qmodl:
     if self.X is None:
       if _arch is None: return
       process = True
-      self.arch = readPickle(_arch) if type(_arch) is str else _arch
+      self.arch = _arch
       if type(_arch) is str:
         ipdn, ipfn = os.path.split(_arch)
         ipfs, ipfe = os.path.splitext(ipfn)
         ipfe = ipfe.lower()
         self.path = ipdn
         self.stem = ipfs
+        if ipfe in ('.hdf', '.h5', '.hd5', '.hdf5'):
+          self.dgei = BQA.read_dgei(_arch)
+          self.arch = [self.dgei.data, self.dgei.hate]
+          [self.X, self.e] = self.arch
+          self.setData(self.X, self.e)
+          self.postprocessDGEI()
+          process = False
+        else:
+          self.arch = readPickle(_arch)
     else:
-      if _arch is None:
+      if self.dgei is not None and type(_arch) is str:
+        self.dgei.write_dgei(_arch)
+        process = False
+      elif _arch is None:
         self.arch = [self.X, self.e, self.n, self.s, self.PMRQGA]
         return self.arch
       elif type(_arch) is str: # we split this to prevent recursive processing
@@ -914,7 +955,6 @@ class Qmodl (qmodl): # A pyqtgraph front-end for qmodl
   defxy = [720, 540]
   form = None
   area = None
-  dgei = None
   PQ = None
   PA = None
   PR = None
@@ -952,16 +992,18 @@ class Qmodl (qmodl): # A pyqtgraph front-end for qmodl
     self.Base = lbw.LBWidget(None, None, None, 'base')
     readData = self.X is None
     if readData: # read
-      self.pf = self.Base.dlgFileOpen("Open File", "", "Results file (*.pkl);;All (*.*)")
+      self.pf = self.Base.dlgFileOpen("Open File", "", "Results file (*.pkl *.hdf);;All (*.*)")
     else:        # write
+      ext = '.hdf' if self.dgei else '.pkl'
       if self.path is None or self.stem is None:
-        self.pf = self.Base.dlgFileSave("Save File", "results.pkl", "Results file (*.pkl);;All (*.*)")
+        self.pf = self.Base.dlgFileSave("Save File", results+ext, 
+                                        f"Results file (*{ext});;All (*.*)")
       else:
         opdn, opfs = self.path, self.stem
         _opdn = opdn.replace('analyses', 'results')
         if os.path.exists(_opdn): opdn = _opdn
-        defop = opdn + '/' + opfs + ".pkl"
-        self.pf = self.Base.dlgFileSave("Save File", defop, "Results file (*.pkl);;All (*.*)")
+        defop = opdn + '/' + opfs + ext
+        self.pf = self.Base.dlgFileSave("Save File", defop, f"Results file (*{ext});;All (*.*)")
     if self.pf is None: return
     if not(len(self.pf)): return
     self.archive(self.pf)
@@ -1238,8 +1280,8 @@ class Qmodl (qmodl): # A pyqtgraph front-end for qmodl
       self.bbox.setIconSize(1, QtCore.QSize(1,1))
       self.bbox.setText(1, 'Marginal 1D')
       self.bbox.Connect(1, self.PlotMarg1D)
-      self.bbox.addButton()
       if self.dgei is None:
+        self.bbox.addButton()
         self.bbox.setIconSize(2, QtCore.QSize(1,1))
         self.bbox.setText(2, 'Marginal 2D')
         self.bbox.Connect(2, self.PlotMarg2D)
@@ -1247,6 +1289,11 @@ class Qmodl (qmodl): # A pyqtgraph front-end for qmodl
         self.bbox.setIconSize(3, QtCore.QSize(1,1))
         self.bbox.setText(3, 'Save')
         self.bbox.Connect(3, self.Archive)
+      else:
+        self.bbox.addButton()
+        self.bbox.setIconSize(2, QtCore.QSize(1,1))
+        self.bbox.setText(2, 'Save')
+        self.bbox.Connect(2, self.Archive)
     self.area.resize(self.defxy[0], self.defxy[1])
     self.form.resize(self.defxy[0], self.defxy[1])
     if self.stem is not None:
@@ -1400,28 +1447,8 @@ class Qmodl (qmodl): # A pyqtgraph front-end for qmodl
     _X = [[]] * len(uimv)
     for i in range(len(uimv)):
       _X[i] = nanravel(self.X[uimv[i]])
-    self.dgei = BQA([1, nmax])
-    self.dgei.set_data(_X, self.e)
     _pgb = pgb()
-    self.nres = nres
-    self.qres = qres
-    self.gres = gres
-    self.dgei.dgei(nres, qres, gres, pgb=_pgb)
-    _pgb.close()
-    self.hatn = self.dgei.hatn
-    self.hatq = self.dgei.hatq * self.pol
-    self.hatg = self.dgei.hatg
-    self.hatv = self.dgei.hatv
-    self.hatl = self.dgei.hatl
-    self.hate = self.dgei.hate
-    self.hata = np.NaN
-    self.hats = self.dgei.hatp
-    self.hatr = self.hatn * self.hatq
-    self.hatvr = QLV(np.abs(self.mn), self.hate, self.hatn, self.hatg, abs(self.hatl), self.hata)
-    self.PN = discprob.mass(self.dgei.marg_n.prob, [np.ravel(self.dgei.marg_n['n'])])
-    self.PQ = discprob.mass(self.dgei.marg_q.prob, [np.ravel(self.dgei.marg_q['q'])])
-    self.PG = discprob.mass(self.dgei.marg_g.prob, [np.ravel(self.dgei.marg_g['g'])])
-    self.PV = discprob.mass(self.dgei.marg_g.prob, [1./np.sqrt(np.ravel(self.dgei.marg_g['g']))])
+    self.runDGEI([1, nmax], _X, self.e, nres, qres, gres, _pgb)
     self.clrGUI()
     self.iniGUI().show()
   def PlotHist(self, ev = None, bw = None):
