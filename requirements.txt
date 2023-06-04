@@ -6,4 +6,4 @@ PyOpenGL
 pyqtgraph
 joblib
 tqdm
-probayes>=0.0.3
+probayes>=0.0.5
