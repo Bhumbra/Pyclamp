@@ -255,7 +255,7 @@ class qpgb (object):
     self.rqt = self.prc._import('PyQt4.QtGui')
     self.dlg = self.rqt.QProgressDialog(self.title, self.cantext, self.minm, self.maxm)
     '''
-    self.dlg = QtWidgets.QProgressDialog(self.title, self.cantext, self.minm, self.maxm)
+    self.dlg = QtWidgets.QProgressDialog(self.title, self.cantext, int(self.minm), int(self.maxm))
     self.dlg.setWindowModality(QtCore.Qt.WindowModal)
     #if self.cancelfunc is None: self.dlg.setCancelButton(0)
     self.set(0) # for some reason a zero-call is needed to kick-start it to appear
@@ -265,11 +265,11 @@ class qpgb (object):
     #self.dlg.show()
   def set(self, x = 1, *args):
     t = time()
-    if self.lomx or x == 0 or x == self.maxd:
+    if self.lomx or int(x) == 0 or x == self.maxd:
       try:
-        self.dlg.setValue(x, _callSync='off')
+        self.dlg.setValue(int(x), _callSync='off')
       except TypeError:
-        self.dlg.setValue(x)
+        self.dlg.setValue(int(x))
     elif t < self.tmin:
       return
     else:
