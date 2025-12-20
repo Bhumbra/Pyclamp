@@ -13,8 +13,8 @@ except ImportError:
   MeshData = None
 
 import subprocess
-import PyQt5
-from pyqtgraph.Qt import QtGui, QtCore
+import PyQt6
+from pyqtgraph.Qt import QtWidgets, QtCore, QtGui
 from pyqtgraph.dockarea import DockArea, Dock
 import pyqtgraph.opengl as gl # ImportError means python-opengl is missing
 from pyqtgraph.opengl.GLViewWidget import GLViewWidget
@@ -22,10 +22,10 @@ from pyqtgraph.opengl import GLSurfacePlotItem
 import pyqtgraph.multiprocess as pgmp
 from time import time
 
-BaseFormClass = QtGui.QMainWindow
+BaseFormClass = QtWidgets.QMainWindow
 BaseGboxClass = pg.GraphicsLayoutWidget
 BaseLboxClass = pg.LayoutWidget
-BaseBboxClass = QtGui.QDialogButtonBox
+BaseBboxClass = QtWidgets.QDialogButtonBox
 BaseAreaClass = DockArea
 BaseDockClass = Dock
 BasePlotClass = pg.PlotItem
@@ -38,18 +38,21 @@ BaseSurfClass = GLSurfacePlotItem
 BaseTextClass = pg.TextItem
 BaseAnimClass = ImageExporter
 
-QtRBButton = QtCore.Qt.LeftButton
+QtRBButton = QtCore.Qt.MouseButton.LeftButton
+QtNoButton = QtCore.Qt.MouseButton.NoButton
 QtCoreQPointF = QtCore.QPointF
-QtGuiQKeyEvent = QtGui.QKeyEvent
-QtGuiQMouseEvent = QtGui.QMouseEvent
-QtGuiQGraphicsMouseEvent = QtGui.QGraphicsSceneMouseEvent
-KeyboardModifiers = QtGui.QApplication.keyboardModifiers
-QtShiftModifier = QtCore.Qt.ShiftModifier
-QtMetaModifier = QtCore.Qt.MetaModifier
-QtControlModifier = QtCore.Qt.ControlModifier
-QtAlternateModifier = QtCore.Qt.AltModifier # Abbreviate or don't. Don't mix.
+QtWidgetsQKeyEvent = QtGui.QKeyEvent
+QtWidgetsQMouseEvent = QtGui.QMouseEvent
+QtWidgetsQGraphicsMouseEvent = QtWidgets.QGraphicsSceneMouseEvent
+KeyboardModifiers = QtWidgets.QApplication.keyboardModifiers
+QtShiftModifier = QtCore.Qt.KeyboardModifier.ShiftModifier
+QtMetaModifier = QtCore.Qt.KeyboardModifier.MetaModifier
+QtControlModifier = QtCore.Qt.KeyboardModifier.ControlModifier
+QtAlternateModifier = QtCore.Qt.KeyboardModifier.AltModifier
 QtEscapeKey =  16777216 # ESCAPE
 QtKeyModifiers = [QtControlModifier, QtShiftModifier, QtMetaModifier, QtAlternateModifier]
+QtApply = QtWidgets.QDialogButtonBox.StandardButton.Apply
+QtCancel = QtWidgets.QDialogButtonBox.StandardButton.Cancel
 # Uncomment the next line to switch between Ctrl/Shift and Meta/Alt
 #QtKeyModifiers = [QtMetaModifier, QtAlternateModifier, QtControlModifier, QtShiftModifier]
 
@@ -213,7 +216,7 @@ class bbox (BaseBboxClass): # A button box widget
     self.Buttons = []
   def addButton(self, *args, **kwds):
     if not(len(args)):
-      self.Buttons.append(BaseBboxClass.addButton(self, QtGui.QDialogButtonBox.Apply, **kwds))
+      self.Buttons.append(BaseBboxClass.addButton(self, QtApply, **kwds))
       self.Buttons[-1].setIconSize(QtCore.QSize(1, 1))
       self.Buttons[-1].setText("")
     else:  
@@ -419,10 +422,10 @@ class anim (BaseAnimClass): # animates a gbox
     return encstr
 
 class graph (BasePlotClass): # adds bounding and RB zooming to Base Plot Class
-  button = QtCore.Qt.NoButton
-  rbButton = QtCore.Qt.LeftButton  
+  button = QtNoButton
+  rbButton = QtRBButton  
   keyMod = QtKeyModifiers
-  xyKeyMod = [QtKeyModifiers[2], QtKeyModifiers[3], QtKeyModifiers[2]+QtKeyModifiers[3]]
+  xyKeyMod = [QtKeyModifiers[2], QtKeyModifiers[3], QtKeyModifiers[2] | QtKeyModifiers[3]]
   escKey = QtEscapeKey
   defRbPen = pg.functions.mkPen((127, 127, 127), width = 1)
   defRbBrush = pg.functions.mkBrush((127, 127, 127, 63))
@@ -586,7 +589,7 @@ class graph (BasePlotClass): # adds bounding and RB zooming to Base Plot Class
       if self.labels[1] is not None: self.setLabel(self.lblpos[1], self.labels[1], **labelStyle)
     if 'tickFontSize' in kwds:
       tickFontSize = kwds['tickFontSize']
-      tickFont = QtGui.QFont()
+      tickFont = QtWidgets.QFont()
       tickFont.setPixelSize(tickFontSize)
       self.getAxis(self.lblpos[0]).setTickFont(tickFont)
       self.getAxis(self.lblpos[1]).setTickFont(tickFont)
@@ -594,7 +597,7 @@ class graph (BasePlotClass): # adds bounding and RB zooming to Base Plot Class
       self.getAxis(self.lblpos[1]).setWidth(int(float(tickFontSize) * 3 + 8))
   def setCursor(self, ev = None, _cursorfunc = None):
     resetCursors = ev is None
-    if isinstance(ev, QtGuiQKeyEvent): # deal with escaped cursors
+    if isinstance(ev, QtWidgetsQKeyEvent): # deal with escaped cursors
       if ev.key() == self.escKey:
         ev.cursors = None
         if self.cursorfunc is not None:
@@ -681,7 +684,7 @@ class graph (BasePlotClass): # adds bounding and RB zooming to Base Plot Class
     if self.RB is None:
       if pen is None: pen = self.defRbPen
       if brush is None: brush = self.defRbBrush 
-      self.RB = QtGui.QGraphicsRectItem(0, 0, 1, 1)
+      self.RB = QtWidgets.QGraphicsRectItem(0, 0, 1, 1)
       self.RB.setPen(pen)
       self.RB.setBrush(brush)
       self.RB.hide()    
@@ -690,7 +693,7 @@ class graph (BasePlotClass): # adds bounding and RB zooming to Base Plot Class
     elif ev is None: # release mouse button  
         self.RB.hide()
         return
-    if type(ev) is QtGuiQGraphicsMouseEvent:  
+    if type(ev) is QtWidgetsQGraphicsMouseEvent:  
       self.XY1 = ev.pos()
     self.keymod = ev.keymod
     x0, y0 = self.XY0.x(), self.XY0.y()
@@ -710,8 +713,8 @@ class graph (BasePlotClass): # adds bounding and RB zooming to Base Plot Class
       y1 = self.height()
     X0, Y0 = self.mapxy(x0, y0, False) # bypasses axis
     X1, Y1 = self.mapxy(x1, y1, False) # transformation
-    XY0 = QtCore.QPoint(X0, Y0)
-    XY1 = QtCore.QPoint(X1, Y1)
+    XY0 = QtCore.QPointF(X0, Y0)
+    XY1 = QtCore.QPointF(X1, Y1)
     try: # to cope with old Qt4 versions.
       rb = QtCore.QRectF(XY0, XY1)
     except TypeError:
@@ -719,9 +722,11 @@ class graph (BasePlotClass): # adds bounding and RB zooming to Base Plot Class
       XY1 = QtCore.QPointF(X1, Y1)
       rb = QtCore.QRectF(XY0, XY1)
     rb = self.childGroup.mapRectFromParent(rb)
-    self.RB.setPos(rb.topLeft())
+    #self.RB.setPos(rb.topLeft())
+    #self.RB.resetTransform()
+    #self.RB.scale(rb.width(), rb.height())
+    self.RB.setRect(rb)
     self.RB.resetTransform()
-    self.RB.scale(rb.width(), rb.height())
     self.RB.show()
   def rbZoom(self):
     _xxyy = [[self.xxyy[0][0], self.xxyy[0][1]], [self.xxyy[1][0], self.xxyy[1][1]]]
@@ -807,7 +812,7 @@ class graph (BasePlotClass): # adds bounding and RB zooming to Base Plot Class
         self.button = ev.button()
         self.dragfunc = _dragFunc
     if self.dragfunc is not None: return  
-    self.rbButton = QtCore.Qt.NoButton if self.view.state['mouseMode'] == pg.ViewBox.RectMode else QtRBButton
+    self.rbButton = QtNoButton if self.view.state['mouseMode'] == pg.ViewBox.RectMode else QtRBButton
     self.button = ev.button()
     if self.button != self.rbButton:
       BasePlotClass.mousePressEvent(self, ev)
@@ -829,7 +834,7 @@ class graph (BasePlotClass): # adds bounding and RB zooming to Base Plot Class
     if type(ev) is tuple: # I don't know why some events are tuples
       return 
     # Button-dependent handling
-    if self.button == QtCore.Qt.NoButton:
+    if self.button == QtNoButton:
       return
     if self.dragfunc is not None:
       self.moved = True
@@ -871,7 +876,7 @@ class graph (BasePlotClass): # adds bounding and RB zooming to Base Plot Class
       ev.status = 0
       ev.X, ev.Y = self.mapxy(ev)
       self.dragfunc(ev)
-      self.button = QtCore.Qt.NoButton
+      self.button = QtNoButton
       self.dragfunc = None
       if self.moved: 
         self.moved = False
@@ -890,11 +895,11 @@ class graph (BasePlotClass): # adds bounding and RB zooming to Base Plot Class
           _rbFunc(ev)
     if not(_moved):
       self.mouseClickEvent(ev)
-    self.button = QtCore.Qt.NoButton
+    self.button = QtNoButton
   def mouseClickEvent(self, ev): # still click event
     if not(self.GUI):
       if self.GUI is not None:
-        BasePlotClass.mouseClickEvent(self, ev)
+        BasePlotClass.mousePressEvent.mouseClickEvent(self, ev)
       return  
     if self.mouseClickEventFunc is not None:
       try:
@@ -909,18 +914,18 @@ class graph (BasePlotClass): # adds bounding and RB zooming to Base Plot Class
         self.unZoom(0)
       elif ev.keymod == self.xyKeyMod[1]:
         self.unZoom(1)
-      elif int(ev.keymod) == int(self.xyKeyMod[2]):
+      elif ev.keymod == self.xyKeyMod[2]:
         self.unZoom(2)
   def mouseDoubleClickEvent(self, ev):
     if not(self.GUI):
       if self.GUI is not None:
-        BasePlotClass.mouseDoubleClickEvent(self, ev)
+        BasePlotClass.mousePressEvent.mouseDoubleClickEvent(self, ev)
       return  
     if self.mouseDoubleClickEventFunc is not None:
       ev.X, ev.Y = self.mapxy(ev)
       self.sender = self
       self.mouseDoubleClickEventFunc(ev)
-    BasePlotClass.mouseDoubleClickEvent(self, ev)
+    BasePlotClass.mousePressEvent.mouseDoubleClickEvent(self, ev)
   def keyPressEvent(self, ev = None):
     if not(self.GUI):
       if self.GUI is not None:

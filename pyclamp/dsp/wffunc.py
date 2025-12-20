@@ -660,7 +660,7 @@ class minmax2: # performs decimation-in-time min-max operations on multi-episode
           j0 = int(max(0, min(float(self.ns-1), round(np.floor(xr[0]/self.si)))))
           j1 = int(max(0, min(float(self.ns-1), round(np.ceil(xr[1]/self.si)))))
           j1 = max(j1, j0+1)
-          xj = np.array(self.x, copy=False)[:,j0:j1]
+          xj = np.array(self.x)[:,j0:j1]
           xj[boolko, :] = MAXSI
           minx, maxx = xj.min(axis=1), xj.max(axis=1)
           ok = np.logical_and(maxx >= yr[0], minx <= yr[1])
@@ -674,7 +674,7 @@ class minmax2: # performs decimation-in-time min-max operations on multi-episode
     if self.ns == 0: return 0
     y_ =  (_y - self.of) / unzero(self.gn)
     j = int(max(0, min(float(self.ns-1), round(_x/self.si))))
-    xj = np.array(self.x, copy=False)[:,j]
+    xj = np.array(self.x)[:,j]
     xj[boolko] = MAXSI
     return argminfabs(xj - y_)
 

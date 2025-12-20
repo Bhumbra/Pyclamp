@@ -17,9 +17,20 @@ def use(_LBWUSE = None):
   except NameError:
     LBWUSE = _LBWUSE.lower()
 
-from PyQt5 import QtGui
-from PyQt5 import QtCore
-from PyQt5 import QtWidgets
+from PyQt6 import QtGui
+from PyQt6 import QtCore
+from PyQt6 import QtWidgets
+from PyQt6.QtWidgets import QListView
+
+QtSelectionModes = {
+  0: QListView.SelectionMode.NoSelection,
+  1: QListView.SelectionMode.SingleSelection,
+  2: QListView.SelectionMode.ContiguousSelection,
+  3: QListView.SelectionMode.MultiSelection,
+  4: QListView.SelectionMode.ExtendedSelection,
+}
+
+QtDontConfirmOverwrite = QtWidgets.QFileDialog.Option.DontConfirmOverwrite
 
 class qtKeys: # code to handle Qwidget-specific functions
   Wid = None
@@ -35,7 +46,7 @@ class qtKeys: # code to handle Qwidget-specific functions
         'childform':QtWidgets.QMdiSubWindow, 'app': QtWidgets.QApplication}
     self.nargin1 = ['box', 'groupbox']
     self.nargin2 = ['checkbox']
-    self.direction = {0 : QtWidgets.QBoxLayout.LeftToRight, 1 : QtWidgets.QBoxLayout.TopToBottom}
+    self.direction = {0 : QtWidgets.QBoxLayout.Direction.LeftToRight, 1 : QtWidgets.QBoxLayout.Direction.TopToBottom}
   def setParent(self, parent = None):
     if parent is not None: self.Parent = parent
   def setChild(self, child = None):
@@ -159,11 +170,7 @@ class qtKeys: # code to handle Qwidget-specific functions
     if self.Wid == 'box' or self.Wid == 'groupbox':
       self.Widget.setDirection(self.boxDir(mode))
     elif self.Wid == 'listbox':
-      if mode == 0: self.Widget.setSelectionMode(QtWidgets.QAbstractItemView.NoSelection)
-      elif mode == 1: self.Widget.setSelectionMode(QtWidgets.QAbstractItemView.SingleSelection)
-      elif mode == 2: self.Widget.setSelectionMode(QtWidgets.QAbstractItemView.ContiguousSelection)
-      elif mode == 3: self.Widget.setSelectionMode(QtWidgets.QAbstractItemView.MultiSelection)
-      elif mode == 4: self.Widget.setSelectionMode(QtWidgets.QAbstractItemView.ExtendedSelection)
+      self.Widget.setSelectionMode(QtSelectionModes[mode])
     if data is not None:
       self.setData(data)
   def show(self):
@@ -185,7 +192,7 @@ class qtKeys: # code to handle Qwidget-specific functions
       return filename[0]
     return filename
   def dlgFileSave(self, titl="Save File", path="", filt="*.*", confirmoverwrite=True):
-    kwds = {} if confirmoverwrite else {'options': QtWidgets.QFileDialog.DontConfirmOverwrite}
+    kwds = {} if confirmoverwrite else {'options': QtDontConfirmOverwrite}
     filename = QtWidgets.QFileDialog.getSaveFileName(self.Widget, 
                                                      self.Widget.tr(titl),
                                                      path, 

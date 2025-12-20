@@ -11,7 +11,7 @@ DEFAULT_TDF_EXTENSION = ".tdf"
 
 import gc
 import webbrowser
-from PyQt5 import QtGui
+from PyQt6 import QtGui
 import numpy as np
 import pyclamp.dsp.sifunc as sifunc
 import pyclamp.dsp.wffunc as wffunc

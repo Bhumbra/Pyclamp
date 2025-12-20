@@ -4,7 +4,8 @@ from pyclamp.dsp.lsfunc import *
 from pyclamp.dsp.dtypes import *
 from pyclamp.dsp.cstats import *
 from pyclamp.dsp.sifunc import *
-from numpy.core.umath_tests import inner1d
+#from numpy.core.umath_tests import inner1d
+from numpy import dot as inner1d
 import scipy.signal as signal
 import scipy.special as special
 import scipy.stats as stats

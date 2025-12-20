@@ -1,6 +1,6 @@
 import numpy as np
 import pyqtgraph as pg
-from pyqtgraph.Qt import QtGui, QtCore
+from pyqtgraph.Qt import QtWidgets, QtCore, QtGui
 import pyclamp.gui.pyqtplot as pq
 import pyclamp.gui.pyplot as pyplot
 from pyclamp.dsp.lsfunc import *
@@ -10,6 +10,8 @@ from pyclamp.gui.xyfunc import *
 from pyclamp.gui.pyplot import *
 from pyclamp.gui.pgb import pgb
 from pyclamp.dsp.channel import chWave
+QtApply = QtWidgets.QDialogButtonBox.StandardButton.Apply
+QtCancel = QtWidgets.QDialogButtonBox.StandardButton.Cancel
 
 class pywavescat: # combines a wave plot with a scatter plot with a discriminating ellipse
   form = None
@@ -378,8 +380,8 @@ class pyscat3: # combines three scatter plots for discrimination.
         self.Bbox[i].Connect(6, self.toggleAccept6)
         self.Bbox[i].Connect(7, self.toggleAccept7)
       else:
-        self.Bbox[i].addButton(QtGui.QDialogButtonBox.Cancel)
-        self.Bbox[i].addButton(QtGui.QDialogButtonBox.Apply)
+        self.Bbox[i].addButton(QtCancel)
+        self.Bbox[i].addButton(QtApply)
         self.Bbox[i].setWidth(0, self.btnWidth)
         self.Bbox[i].setWidth(1, self.btnWidth)
         self.Bbox[i].Connect(0, self.cancelClick)
@@ -577,8 +579,8 @@ class pywavescat3 (pywavescat, pyscat3): # combines a wave plot with a 3 scatter
         self.Bbox[i].Connect(6, self.toggleAccept6)
         self.Bbox[i].Connect(7, self.toggleAccept7)
       elif i == 2:
-        self.Bbox[i].addButton(QtGui.QDialogButtonBox.Cancel)
-        self.Bbox[i].addButton(QtGui.QDialogButtonBox.Apply)
+        self.Bbox[i].addButton(QtCancel)
+        self.Bbox[i].addButton(QtApply)
         self.Bbox[i].setWidth(0, self.btnWidth)
         self.Bbox[i].setWidth(1, self.btnWidth)
         self.Bbox[i].Connect(0, self.cancelClick)
@@ -760,8 +762,8 @@ class pydisc1(pywavescat):
     self.Dock = dock()
     self.area.add(self.Dock, 'bottom')
     self.Bbox = self.Dock.addBbox()
-    self.Bbox.addButton(QtGui.QDialogButtonBox.Cancel)
-    self.Bbox.addButton(QtGui.QDialogButtonBox.Apply)
+    self.Bbox.addButton(QtCancel)
+    self.Bbox.addButton(QtApply)
     self.Bbox.setWidth(0, self.btnWidth)
     self.Bbox.setWidth(1, self.btnWidth)
     self.Bbox.Connect(0, self.cancelClick)

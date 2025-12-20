@@ -23,7 +23,7 @@ def SetDefScatMarkerSize(_DEFSCATMARKERSIZE = None): # pyscat defaults to 3.
 JetRGBC = SetJetRGBC()
 DEFSCATMARKERSIZE = SetDefScatMarkerSize()
 
-BaseFormClass = QtGui.QMainWindow
+BaseFormClass = QtWidgets.QMainWindow
 BaseGboxClass = gbox
 BasePlotClass = pg.PlotItem
 QtGuiQPen = QtGui.QPen
@@ -46,6 +46,8 @@ QtMapModifiers= { QtControlModifier:QtKeyControl,
                   QtMetaModifier:QtKeyMeta,
                   QtAlternateModifier:QtKeyAlternate }
 KEY_ALL_INVERT_NONE = [85, 73, 79] # U I O
+
+QtDotLine = QtCore.Qt.PenStyle.DotLine
 
 # ABXY: Append select, Block select, X, Y
 
@@ -159,7 +161,7 @@ def amplify(x, d = 0.333, c = 2): # amplifies a pen/brush colour
   if type(x) is QtGuiQBrush:
     return pg.mkBrush(color=(rgb[0]*255., rgb[1]*255., rgb[2]*255.), width = w)
 
-def attenuate(x, d = 0.333, c = 0.5, a = 0.333, penstyle = QtCore.Qt.DotLine): # attenuates a pen/brush colour
+def attenuate(x, d = 0.333, c = 0.5, a = 0.333, penstyle = QtDotLine): # attenuates a pen/brush colour
   rgb = x.color().getRgb()
   rgb = np.array(rgb, dtype = float)[:3] / 255.
   sumc = rgb.sum()
