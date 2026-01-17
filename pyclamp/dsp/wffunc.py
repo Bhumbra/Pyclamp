@@ -675,7 +675,7 @@ class minmax2: # performs decimation-in-time min-max operations on multi-episode
     y_ =  (_y - self.of) / unzero(self.gn)
     j = int(max(0, min(float(self.ns-1), round(_x/self.si))))
     xj = np.array(self.x)[:,j]
-    xj[boolko] = MAXSI
+    xj[boolko] = np.finfo(xj.dtype).max
     return argminfabs(xj - y_)
 
 def analyseInflection(w, _i0 = 0, _i1 = None, _polyn = 6, trimlim = np.inf):

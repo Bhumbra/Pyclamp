@@ -809,11 +809,11 @@ class graph (BasePlotClass): # adds bounding and RB zooming to Base Plot Class
       ev.status = 1 # 0 = button released, 1 = button down, 2 = drag
       ev.X, ev.Y = self.mapxy(ev)
       if _dragFunc(ev):
-        self.button = ev.button()
+        self.button = ev.button().value
         self.dragfunc = _dragFunc
     if self.dragfunc is not None: return  
     self.rbButton = QtNoButton if self.view.state['mouseMode'] == pg.ViewBox.RectMode else QtRBButton
-    self.button = ev.button()
+    self.button = ev.button().value
     if self.button != self.rbButton:
       BasePlotClass.mousePressEvent(self, ev)
       return

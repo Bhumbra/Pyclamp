@@ -768,14 +768,16 @@ class pywave:
     if self.plot is None: return
     self.plot.show()
   def mouseClickEvent(self, ev):
-    if ev.button() == QtLeftButton:
+    ev_button = ev.button().value
+    if ev_button == QtLeftButton:
       i = self.mm2.pick(ev.X, ev.Y, self.visual)
       if i is None: return
       ID = self.eid[i]
-      if ev.keymod == ABXYKeyModifiers[0]:
+      keymod = ev._modifiers
+      if keymod == ABXYKeyModifiers[0]:
         self.Active[2][ID[0]][ID[1]] = True
       else:
-        tog = self.Active[2][ID[0]][ID[1]] if self.active[2].sum() == 1 else ev.keymod == ABXYKeyModifiers[1]
+        tog = self.Active[2][ID[0]][ID[1]] if self.active[2].sum() == 1 else keymod == ABXYKeyModifiers[1]
         if not(tog):
           self.setActive([None, None, False])
         self.Active[2][ID[0]][ID[1]] = np.logical_not(self.Active[2][ID[0]][ID[1]])
@@ -785,7 +787,7 @@ class pywave:
       ev.sender = self
       ev.action = 2
       self.onActiveChanged(ev)
-    elif ev.button() == QtMidButton:
+    elif ev_button == QtMidButton:
       self.toggleOverlay()
     if self.mouseClickEventFunc is not None:
       ev.action = 1
@@ -795,7 +797,8 @@ class pywave:
     I = self.mm2.pick(ev.X, ev.Y, self.visual)
     if I is None: return
     if isint(I): I = [I]
-    if ev.keymod == ABXYKeyModifiers[1]: # Block-select rather than append
+    keymod = ev._modifiers
+    if keymod == ABXYKeyModifiers[1]: # Block-select rather than append
       self.setActive([None, None, False])
     for i in I:
       ID = self.eid[i]
@@ -1522,12 +1525,14 @@ class pyscat (xygui):
     ev.action = 1
     self.onActiveChanged(ev)
   def mouseClickEvent(self, ev):
-    if ev.button() == QtLeftButton:
+    ev_button = ev.button().value
+    keymod = ev._modifiers
+    if ev_button == QtLeftButton:
       i = self.argnear(ev.X, ev.Y, True, self.plot.xxyy[0], self.plot.xxyy[1])
-      if ev.keymod == ABXYKeyModifiers[0]:
+      if keymod == ABXYKeyModifiers[0]:
         self.active[2][i] = True
       else:
-        tog = self.active[2][i] if self.active[2].sum() == 1 else ev.keymod == ABXYKeyModifiers[1]
+        tog = self.active[2][i] if self.active[2].sum() == 1 else keymod == ABXYKeyModifiers[1]
         if not(tog):
           self.setActive([None, None, False])
         self.active[2][i] = np.logical_not(self.active[2][i])
@@ -1535,14 +1540,14 @@ class pyscat (xygui):
       self.setScat()
       ev.action = 2
       self.onActiveChanged(ev)
-    elif ev.button() == QtRightButton:
+    elif ev_button == QtRightButton:
       if self.ells is not None:
         self.defEllipse()
         ev.status = 0
         self.dragEllipse(ev) # drag the ellipse back to default position
         ev.action = 1
         self.onActiveChanged(ev)
-    elif ev.button() == QtMidButton:
+    elif ev_button == QtMidButton:
       if self.ells is not None:
         self.useinside = not(self.useinside)
         self.calcEllipse()
@@ -1552,7 +1557,8 @@ class pyscat (xygui):
         self.onActiveChanged(ev)
   def rbEvent(self, ev):
     i = self.argnear(ev.X, ev.Y, True, self.plot.xxyy[0], self.plot.xxyy[1])
-    if ev.keymod == ABXYKeyModifiers[1]: # Block-select rather than append
+    keymod = ev._modifiers
+    if keymod == ABXYKeyModifiers[1]: # Block-select rather than append
       self.setActive([None, None, False])
     self.active[2][i] = True
     self.setActive()
@@ -1560,6 +1566,7 @@ class pyscat (xygui):
     ev.action = 2
     self.onActiveChanged(ev)
   def keyPressEvent(self, ev):
+    print(ev)
     if ev.key() == QtKeyEscape:
       print("Escape")
     ev.action = 0
