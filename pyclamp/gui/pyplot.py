@@ -687,7 +687,7 @@ class pywave:
     for i in range(self.ne):
       h = self.visord[i] if self.showInactive else i # previously created random crashes (used h = i before)
       if self.plots[h] is not None:
-        self.plots[h].setVisible(self.unpick[i])
+        self.plots[h].setVisible(bool(self.unpick[i]))
         pn = self.pens[i]
         if not(self.active[1][i]) and self.attfunc is not None:
           if self.attfunc is not None: pn = self.attfunc(pn)
@@ -714,11 +714,11 @@ class pywave:
         if self.picks[i] is None:
           self.picks[i] = pg.PlotCurveItem(self.T[i], self.Y[i], pen=pn)
           self.plot.addItem(self.picks[i])
-          self.picks[i].setVisible(self.visual[i])
+          self.picks[i].setVisible(bool(self.visual[i]))
         else:
           self.picks[i].setData(self.T[i], self.Y[i])
           self.picks[i].setPen(pn)
-          self.picks[i].setVisible(self.visual[i])
+          self.picks[i].setVisible(bool(self.visual[i]))
       elif self.picks[i] is not None:
         self.picks[i].setData([], [])
         self.picks[i].setPen(nullpen())

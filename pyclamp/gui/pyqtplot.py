@@ -919,13 +919,13 @@ class graph (BasePlotClass): # adds bounding and RB zooming to Base Plot Class
   def mouseDoubleClickEvent(self, ev):
     if not(self.GUI):
       if self.GUI is not None:
-        BasePlotClass.mousePressEvent.mouseDoubleClickEvent(self, ev)
+        BasePlotClass.mouseDoubleClickEvent(self, ev)
       return  
     if self.mouseDoubleClickEventFunc is not None:
       ev.X, ev.Y = self.mapxy(ev)
       self.sender = self
       self.mouseDoubleClickEventFunc(ev)
-    BasePlotClass.mousePressEvent.mouseDoubleClickEvent(self, ev)
+    BasePlotClass.mouseDoubleClickEvent(self, ev)
   def keyPressEvent(self, ev = None):
     if not(self.GUI):
       if self.GUI is not None:

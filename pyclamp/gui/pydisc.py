@@ -413,7 +413,6 @@ class pyscat3: # combines three scatter plots for discrimination.
     return 0
   def setBtns(self, spec = 0, ind = 0):
     if spec == 2: return
-    palroles = [QtGui.QPalette.Inactive, QtGui.QPalette.Active]
     txtroles = ['Off', 'On']
     for i in range(8):
       hicol = np.array(self.logCols[i], dtype = float) * self.colco[int(self.useBool[i])]

@@ -7,7 +7,7 @@ from pyclamp.dsp.fpfunc import *
 from pyclamp.dsp.dtypes import *
 from pyclamp.dsp.optfunc import *
 
-MAXSI = 9223372036854775807
+MAXSI32 = 9223372036854775807
 
 def latency(_t, _r, d = 0., n = 0, o = False): 
   # calculates latency of t wrt reference r offset d assuming overlap o
@@ -202,7 +202,7 @@ def cusum1sthtanfit(lt, ne = 1, nran = [4, np.inf], xran = [-np.inf, np.inf], fr
   fit = htanfit(x[i], y[i])
   return x, y, np.array((pol, e)), fit[0]
 
-def winqran(_win, _q = 0, si = 1., _mm = [0, MAXSI]):
+def winqran(_win, _q = 0, si = 1., _mm = [0, MAXSI32]):
   win = [_win[0], _win[1]]
   mm = [_mm[0], _mm[1]]
   if Type(win[0]) is float: win[0] = int(round(win[0]/si))

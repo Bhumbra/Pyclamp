@@ -1,9 +1,11 @@
 numpy
 scipy
 xlrd
-PyQt5
-PyOpenGL
-pyqtgraph
 joblib
 tqdm
+xlrd
+PyQt6
+PyOpenGL
+colorama
+pyqtgraph
 probayes>=0.0.6
