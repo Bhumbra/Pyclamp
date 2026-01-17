@@ -13,8 +13,8 @@ testing the code, for instance (you may need first to use your Linux package
 manager to  install python3-venv):
 
 ```sh
-$ python3 -m venv ~/virtual_env
-$ source ~/virtual_env/bin/activate
+$ python3 -m venv venv
+$ source venv/bin/activate
 ```
 
 If your pip version is out of date, it needs to be upgraded (version>=25.0):

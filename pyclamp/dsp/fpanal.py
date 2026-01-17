@@ -382,7 +382,7 @@ class RFA (censca): # rise and fall analysis accommodating both polarities - not
       # Tabulate results of double fit
 
       self.Z[i,26] = float(len(x)) * si # Fit duration
-      self.Z[i,27] = exp2amp(hp)
+      self.Z[i,27] = np.ravel(exp2amp(hp))[0]
       self.Z[i,28:32] = hp
       self.Z[i,32] = ldcr
       self.Z[i,33] = ldcf
