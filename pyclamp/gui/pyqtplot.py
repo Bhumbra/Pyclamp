@@ -38,13 +38,13 @@ BaseSurfClass = GLSurfacePlotItem
 BaseTextClass = pg.TextItem
 BaseAnimClass = ImageExporter
 
-QtRBButton = QtCore.Qt.MouseButton.LeftButton
-QtNoButton = QtCore.Qt.MouseButton.NoButton
+QtRBButton = QtCore.Qt.MouseButton.LeftButton.value
+QtNoButton = QtCore.Qt.MouseButton.NoButton.value
 QtCoreQPointF = QtCore.QPointF
 QtWidgetsQKeyEvent = QtGui.QKeyEvent
 QtWidgetsQMouseEvent = QtGui.QMouseEvent
 QtWidgetsQGraphicsMouseEvent = QtWidgets.QGraphicsSceneMouseEvent
-KeyboardModifiers = QtWidgets.QApplication.keyboardModifiers
+QtKeyboardModifiers = QtWidgets.QApplication.keyboardModifiers
 QtShiftModifier = QtCore.Qt.KeyboardModifier.ShiftModifier
 QtMetaModifier = QtCore.Qt.KeyboardModifier.MetaModifier
 QtControlModifier = QtCore.Qt.KeyboardModifier.ControlModifier
@@ -763,7 +763,7 @@ class graph (BasePlotClass): # adds bounding and RB zooming to Base Plot Class
     if self.xxyy is None: self.xxyy = self.viewRange() 
     self.XXYY = [[self.xxyy[0][0], self.xxyy[0][1]], [self.xxyy[1][0], self.xxyy[1][1]]]
   def bound(self, _xxyy):
-    self.keymod = KeyboardModifiers()
+    self.keymod = QtKeyboardModifiers()
     self.boundx = False
     self.boundy = False
     if self.XXYY is None: return _xxyy
@@ -802,7 +802,7 @@ class graph (BasePlotClass): # adds bounding and RB zooming to Base Plot Class
           self.setCursor(ev)
       return  
     self.firstEvent(ev)
-    ev.keymod = KeyboardModifiers()
+    ev.keymod = QtKeyboardModifiers()
     self.moved = False
     self.dragfunc = None
     for _dragFunc in self.dragFunc:
@@ -858,7 +858,7 @@ class graph (BasePlotClass): # adds bounding and RB zooming to Base Plot Class
       return  
     if type(ev) is tuple: return # I don't know why some events are tuples
     if not(hasattr(ev, 'keymod')):
-      ev.keymod = KeyboardModifiers()
+      ev.keymod = QtKeyboardModifiers()
     if self.button == self.rbButton:
       self.setRB(ev)
       return
@@ -871,7 +871,7 @@ class graph (BasePlotClass): # adds bounding and RB zooming to Base Plot Class
       if self.GUI is not None:
         self.view.mouseReleaseEvent(ev)
       return  
-    ev.keymod = KeyboardModifiers()
+    ev.keymod = QtKeyboardModifiers()
     if self.dragfunc is not None:
       ev.status = 0
       ev.X, ev.Y = self.mapxy(ev)
@@ -909,7 +909,7 @@ class graph (BasePlotClass): # adds bounding and RB zooming to Base Plot Class
       self.sender = self
       self.mouseClickEventFunc(ev)
     if self.button == self.rbButton:  
-      ev.keymod = KeyboardModifiers()
+      ev.keymod = QtKeyboardModifiers()
       if ev.keymod == self.xyKeyMod[0]:
         self.unZoom(0)
       elif ev.keymod == self.xyKeyMod[1]:
@@ -940,7 +940,7 @@ class graph (BasePlotClass): # adds bounding and RB zooming to Base Plot Class
       ev.sender = self
       self.keyPressEventFunc(ev)
     if self.moved and self.button == self.rbButton: # we're mid-event
-      ev.keymod = KeyboardModifiers()
+      ev.keymod = QtKeyboardModifiers()
       if ev.keymod in self.xyKeyMod or int(ev.keymod) == int(self.xyKeyMod[2]):
         return self.mouseDragEvent(ev)
   def keyReleaseEvent(self, ev):

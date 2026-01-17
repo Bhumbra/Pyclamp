@@ -155,7 +155,7 @@ def readQfile(pf = "", spec = None): # an attempt of a universal import function
 
   # Handle easiest (or rather least-flexible) case - an Excel file
   if ipfe == ".xls" or ipfe == ".xlsx":
-    _Data, _Labels = readXLData(pf, 0, True) # this automatically tranposes and replaces strings with NaNs
+    _Data, _Labels = readXLData(pf, 0, True) # this automatically tranposes and replaces strings with nans
     if not(np.all(np.isnan(_Data[:, 0]))): # if any columns are numeric do not assume headers as labels
       _Labels = [''] * len(_Data)
       for i in range(len(_Data)):
@@ -242,12 +242,12 @@ def readQfile(pf = "", spec = None): # an attempt of a universal import function
     if k is None:
       raise ValueError("File " + ipfn + " missing headed data specification: " + spec)
     J = len(_data)
-    s_Data[i] = np.tile(np.NaN, J-1)
+    s_Data[i] = np.tile(np.nan, J-1)
     for j in range(1, J):
       _datum = _data[j][k]
       if isnumeric(_datum):
         s_Data[i][j-1] = float(_datum)
-    s_Data[i] = nanravel(s_Data[i]) # remove NaNs
+    s_Data[i] = nanravel(s_Data[i]) # remove nans
   for i in range(lend2-1, -1, -1): # remove empty data vectors
     if not(len(s_Data[i])):
       del s_Data[i]
@@ -284,18 +284,18 @@ class qmodl:
     self.setRes()
     self.setData(_X, _e)
   def iniHatValues(self):
-    self.paru = np.NaN
-    self.parn = np.NaN
-    self.parq = np.NaN
-    self.hate = np.NaN
-    self.hatq = np.NaN
-    self.hatg = np.NaN
-    self.hata = np.NaN
-    self.hatr = np.NaN
-    self.hatn = np.NaN
-    self.hatl = np.NaN
-    self.hatv = np.NaN
-    self.hats = np.NaN
+    self.paru = np.nan
+    self.parn = np.nan
+    self.parq = np.nan
+    self.hate = np.nan
+    self.hatq = np.nan
+    self.hatg = np.nan
+    self.hata = np.nan
+    self.hatr = np.nan
+    self.hatn = np.nan
+    self.hatl = np.nan
+    self.hatv = np.nan
+    self.hats = np.nan
   def iniLabels(self):
     self.labels = None
     self.path = None
@@ -855,7 +855,7 @@ class qmodl:
     self.hatr = float(self.PR.sample(1))
     self.hatq = float(self.PQ.sample(1))
     self.hatg = float(self.PG.sample(1))
-    self.hata = float(self.PA.sample(1)) if self.modelBeta else np.NaN
+    self.hata = float(self.PA.sample(1)) if self.modelBeta else np.nan
     self.hatn = self.hatr / (self.hatq + mino)
     self.hatl = self.hatq / (self.hatg + mino)
     self.hatv = 1.0 / (np.sqrt(self.hatg) + mino)
@@ -877,7 +877,7 @@ class qmodl:
     self.hatv = self.dgei.hatv
     self.hatl = self.dgei.hatl
     self.hate = self.dgei.hate
-    self.hata = np.NaN
+    self.hata = np.nan
     self.hats = self.dgei.hatp
     self.hatr = self.hatn * self.hatq
     self.hatvr = QLV(np.abs(self.mn), self.hate, self.hatn, self.hatg, abs(self.hatl), self.hata)

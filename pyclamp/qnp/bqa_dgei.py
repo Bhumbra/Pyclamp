@@ -220,7 +220,7 @@ class BQA:
     self.model.set_prob(lqlf, eps=self.eps, pgb=pgb)
     call = {'x,i': self.xi, 'n':np.array(nset), 'q': {qres}, 'g': {gres}}
     ll = self.model(call)
-    self.llx = ll.rescaled(np.complex(np.mean(ll.prob)))
+    self.llx = ll.rescaled(complex(np.mean(ll.prob)))
     I = np.ravel(self.llx['i'])
     u = np.unique(I).tolist()
     self.lli = [self.llx({'i':i}, keepdims=True) for i in u]

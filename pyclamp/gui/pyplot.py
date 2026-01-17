@@ -773,7 +773,7 @@ class pywave:
       i = self.mm2.pick(ev.X, ev.Y, self.visual)
       if i is None: return
       ID = self.eid[i]
-      keymod = ev._modifiers
+      keymod = ev.modifiers()
       if keymod == ABXYKeyModifiers[0]:
         self.Active[2][ID[0]][ID[1]] = True
       else:
@@ -797,7 +797,7 @@ class pywave:
     I = self.mm2.pick(ev.X, ev.Y, self.visual)
     if I is None: return
     if isint(I): I = [I]
-    keymod = ev._modifiers
+    keymod = ev.modifiers()
     if keymod == ABXYKeyModifiers[1]: # Block-select rather than append
       self.setActive([None, None, False])
     for i in I:
@@ -1526,7 +1526,7 @@ class pyscat (xygui):
     self.onActiveChanged(ev)
   def mouseClickEvent(self, ev):
     ev_button = ev.button().value
-    keymod = ev._modifiers
+    keymod = ev.modifiers()
     if ev_button == QtLeftButton:
       i = self.argnear(ev.X, ev.Y, True, self.plot.xxyy[0], self.plot.xxyy[1])
       if keymod == ABXYKeyModifiers[0]:
@@ -1557,7 +1557,7 @@ class pyscat (xygui):
         self.onActiveChanged(ev)
   def rbEvent(self, ev):
     i = self.argnear(ev.X, ev.Y, True, self.plot.xxyy[0], self.plot.xxyy[1])
-    keymod = ev._modifiers
+    keymod = ev.modifiers()
     if keymod == ABXYKeyModifiers[1]: # Block-select rather than append
       self.setActive([None, None, False])
     self.active[2][i] = True

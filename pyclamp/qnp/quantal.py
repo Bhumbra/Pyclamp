@@ -13,7 +13,7 @@ def anal(data, e = None, nmax = None, modelprob = 2, rescoef = 1.0, resmin = 128
   modelbeta = modelprob == 2
   self = qmod.qbay(rescoef, resmin, resmax)
   self.setData(data, e, nmax)
-  hata = np.NaN
+  hata = np.nan
   if modelprob:
     self.setPriors(rescoef, resmin, resmax, modelbeta)
     self.calcPosts()

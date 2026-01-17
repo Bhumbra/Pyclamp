@@ -201,7 +201,7 @@ def readODData(fn, sn = 0, ret1stRow = False):
   data = readODFile(fn, sn)
   nrows = len(data)
   ncols = len(data[0]) if nrows else 0
-  Data = np.tile( (np.array(np.NaN)), (ncols, nrows))
+  Data = np.tile( (np.array(np.nan)), (ncols, nrows))
   for j in range(ncols):
     for i in range(nrows):
       d = data[i][j]
@@ -233,7 +233,7 @@ def readXLData(fn, sn = 0, ret1stRow = False):
   data = readXLFile(fn, sn)
   nrows = len(data)
   ncols = len(data[0]) if nrows else 0
-  Data = np.tile( (np.array(np.NaN)), (ncols, nrows))
+  Data = np.tile( (np.array(np.nan)), (ncols, nrows))
   for j in range(ncols):
     for i in range(nrows):
       d = data[i][j]
@@ -354,7 +354,7 @@ def readSVFile(fn, delim = None, nanconv = True):
       isN, isn = isNumeric(xi, True)
       if isN:
         xi = np.array(xi, dtype = float)
-        xi[xi == NOTANUMBER] = np.NaN
+        xi[xi == NOTANUMBER] = np.nan
       else:
         NC[i] = False
         for j in range(len(isn)):

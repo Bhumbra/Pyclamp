@@ -9,6 +9,10 @@ from pyclamp.dsp.dtypes import *
 from pyclamp.dsp.lsfunc import *
 from pyclamp.dsp.optfunc import *
 
+def dt_max(dtype):
+  info = np.finfo if dtype in (np.dtype('float32'), np.dtype('float64')) else np.iinfo
+  return info(dtype).max
+
 SHOWFITS = False
 if SHOWFITS: 
   from mplqt import * 
@@ -661,7 +665,7 @@ class minmax2: # performs decimation-in-time min-max operations on multi-episode
           j1 = int(max(0, min(float(self.ns-1), round(np.ceil(xr[1]/self.si)))))
           j1 = max(j1, j0+1)
           xj = np.array(self.x)[:,j0:j1]
-          xj[boolko, :] = np.iinfo(xj.dtype).max
+          xj[boolko, :] = dt_max(xj.dtype)
           minx, maxx = xj.min(axis=1), xj.max(axis=1)
           ok = np.logical_and(maxx >= yr[0], minx <= yr[1])
         i = argtrue(np.logical_and(ok, boolok))
@@ -675,7 +679,7 @@ class minmax2: # performs decimation-in-time min-max operations on multi-episode
     y_ =  (_y - self.of) / unzero(self.gn)
     j = int(max(0, min(float(self.ns-1), round(_x/self.si))))
     xj = np.array(self.x)[:,j]
-    xj[boolko] = np.finfo(xj.dtype).max
+    xj[boolko] = dt_max(xj.dtype)
     return argminfabs(xj - y_)
 
 def analyseInflection(w, _i0 = 0, _i1 = None, _polyn = 6, trimlim = np.inf):

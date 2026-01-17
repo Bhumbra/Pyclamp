@@ -149,15 +149,15 @@ class qbay:
     self.iniHatValues()
     self.setRes(rescoef, resmin, resmax)     
   def iniHatValues(self):    
-    self.hate = np.NaN
-    self.hatq = np.NaN
-    self.hatg = np.NaN
-    self.hata = np.NaN
-    self.hatr = np.NaN
-    self.hatn = np.NaN
-    self.hatl = np.NaN
-    self.hatv = np.NaN
-    self.hats = np.NaN
+    self.hate = np.nan
+    self.hatq = np.nan
+    self.hatg = np.nan
+    self.hata = np.nan
+    self.hatr = np.nan
+    self.hatn = np.nan
+    self.hatl = np.nan
+    self.hatv = np.nan
+    self.hats = np.nan
   def setRes(self, rescoef = None, resmin = None, resmax = None):
     if isarray(rescoef):
       if len(rescoef) == 2:
@@ -634,7 +634,7 @@ class qbay:
     return fi
   def summTable(self, fi = None, numformat = "%.3f"):
     if fi is None: fi = mp.figure()
-    hata = np.NaN
+    hata = np.nan
     if self.modelBeta:      
       hata = self.hata
     self.results = [] 
@@ -907,7 +907,7 @@ class bqa (qbay): # A Qt-free Matplotlib-API GUI wrapper class for qbay
         if k is None:
           raise ValueError("File " + ipfn + " missing headed data specification: " + spec)
         J = len(_data)
-        self.Data[i] = np.tile(np.NaN, J-1)
+        self.Data[i] = np.tile(np.nan, J-1)
         for j in range(1, J):
           _datum = _data[j][k]
           if isnumeric(_datum):
