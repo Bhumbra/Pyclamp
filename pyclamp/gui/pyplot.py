@@ -23,7 +23,7 @@ def SetDefScatMarkerSize(_DEFSCATMARKERSIZE = None): # pyscat defaults to 3.
 JetRGBC = SetJetRGBC()
 DEFSCATMARKERSIZE = SetDefScatMarkerSize()
 
-BaseFormClass = QtGui.QMainWindow
+BaseFormClass = QtWidgets.QMainWindow
 BaseGboxClass = gbox
 BasePlotClass = pg.PlotItem
 QtGuiQPen = QtGui.QPen
@@ -46,6 +46,8 @@ QtMapModifiers= { QtControlModifier:QtKeyControl,
                   QtMetaModifier:QtKeyMeta,
                   QtAlternateModifier:QtKeyAlternate }
 KEY_ALL_INVERT_NONE = [85, 73, 79] # U I O
+
+QtDotLine = QtCore.Qt.PenStyle.DotLine
 
 # ABXY: Append select, Block select, X, Y
 
@@ -159,7 +161,7 @@ def amplify(x, d = 0.333, c = 2): # amplifies a pen/brush colour
   if type(x) is QtGuiQBrush:
     return pg.mkBrush(color=(rgb[0]*255., rgb[1]*255., rgb[2]*255.), width = w)
 
-def attenuate(x, d = 0.333, c = 0.5, a = 0.333, penstyle = QtCore.Qt.DotLine): # attenuates a pen/brush colour
+def attenuate(x, d = 0.333, c = 0.5, a = 0.333, penstyle = QtDotLine): # attenuates a pen/brush colour
   rgb = x.color().getRgb()
   rgb = np.array(rgb, dtype = float)[:3] / 255.
   sumc = rgb.sum()
@@ -685,7 +687,7 @@ class pywave:
     for i in range(self.ne):
       h = self.visord[i] if self.showInactive else i # previously created random crashes (used h = i before)
       if self.plots[h] is not None:
-        self.plots[h].setVisible(self.unpick[i])
+        self.plots[h].setVisible(bool(self.unpick[i]))
         pn = self.pens[i]
         if not(self.active[1][i]) and self.attfunc is not None:
           if self.attfunc is not None: pn = self.attfunc(pn)
@@ -712,11 +714,11 @@ class pywave:
         if self.picks[i] is None:
           self.picks[i] = pg.PlotCurveItem(self.T[i], self.Y[i], pen=pn)
           self.plot.addItem(self.picks[i])
-          self.picks[i].setVisible(self.visual[i])
+          self.picks[i].setVisible(bool(self.visual[i]))
         else:
           self.picks[i].setData(self.T[i], self.Y[i])
           self.picks[i].setPen(pn)
-          self.picks[i].setVisible(self.visual[i])
+          self.picks[i].setVisible(bool(self.visual[i]))
       elif self.picks[i] is not None:
         self.picks[i].setData([], [])
         self.picks[i].setPen(nullpen())
@@ -766,14 +768,16 @@ class pywave:
     if self.plot is None: return
     self.plot.show()
   def mouseClickEvent(self, ev):
-    if ev.button() == QtLeftButton:
+    ev_button = ev.button().value
+    if ev_button == QtLeftButton:
       i = self.mm2.pick(ev.X, ev.Y, self.visual)
       if i is None: return
       ID = self.eid[i]
-      if ev.keymod == ABXYKeyModifiers[0]:
+      keymod = ev.modifiers()
+      if keymod == ABXYKeyModifiers[0]:
         self.Active[2][ID[0]][ID[1]] = True
       else:
-        tog = self.Active[2][ID[0]][ID[1]] if self.active[2].sum() == 1 else ev.keymod == ABXYKeyModifiers[1]
+        tog = self.Active[2][ID[0]][ID[1]] if self.active[2].sum() == 1 else keymod == ABXYKeyModifiers[1]
         if not(tog):
           self.setActive([None, None, False])
         self.Active[2][ID[0]][ID[1]] = np.logical_not(self.Active[2][ID[0]][ID[1]])
@@ -783,7 +787,7 @@ class pywave:
       ev.sender = self
       ev.action = 2
       self.onActiveChanged(ev)
-    elif ev.button() == QtMidButton:
+    elif ev_button == QtMidButton:
       self.toggleOverlay()
     if self.mouseClickEventFunc is not None:
       ev.action = 1
@@ -793,7 +797,8 @@ class pywave:
     I = self.mm2.pick(ev.X, ev.Y, self.visual)
     if I is None: return
     if isint(I): I = [I]
-    if ev.keymod == ABXYKeyModifiers[1]: # Block-select rather than append
+    keymod = ev.modifiers()
+    if keymod == ABXYKeyModifiers[1]: # Block-select rather than append
       self.setActive([None, None, False])
     for i in I:
       ID = self.eid[i]
@@ -1520,12 +1525,14 @@ class pyscat (xygui):
     ev.action = 1
     self.onActiveChanged(ev)
   def mouseClickEvent(self, ev):
-    if ev.button() == QtLeftButton:
+    ev_button = ev.button().value
+    keymod = ev.modifiers()
+    if ev_button == QtLeftButton:
       i = self.argnear(ev.X, ev.Y, True, self.plot.xxyy[0], self.plot.xxyy[1])
-      if ev.keymod == ABXYKeyModifiers[0]:
+      if keymod == ABXYKeyModifiers[0]:
         self.active[2][i] = True
       else:
-        tog = self.active[2][i] if self.active[2].sum() == 1 else ev.keymod == ABXYKeyModifiers[1]
+        tog = self.active[2][i] if self.active[2].sum() == 1 else keymod == ABXYKeyModifiers[1]
         if not(tog):
           self.setActive([None, None, False])
         self.active[2][i] = np.logical_not(self.active[2][i])
@@ -1533,14 +1540,14 @@ class pyscat (xygui):
       self.setScat()
       ev.action = 2
       self.onActiveChanged(ev)
-    elif ev.button() == QtRightButton:
+    elif ev_button == QtRightButton:
       if self.ells is not None:
         self.defEllipse()
         ev.status = 0
         self.dragEllipse(ev) # drag the ellipse back to default position
         ev.action = 1
         self.onActiveChanged(ev)
-    elif ev.button() == QtMidButton:
+    elif ev_button == QtMidButton:
       if self.ells is not None:
         self.useinside = not(self.useinside)
         self.calcEllipse()
@@ -1550,7 +1557,8 @@ class pyscat (xygui):
         self.onActiveChanged(ev)
   def rbEvent(self, ev):
     i = self.argnear(ev.X, ev.Y, True, self.plot.xxyy[0], self.plot.xxyy[1])
-    if ev.keymod == ABXYKeyModifiers[1]: # Block-select rather than append
+    keymod = ev.modifiers()
+    if keymod == ABXYKeyModifiers[1]: # Block-select rather than append
       self.setActive([None, None, False])
     self.active[2][i] = True
     self.setActive()
@@ -1558,6 +1566,7 @@ class pyscat (xygui):
     ev.action = 2
     self.onActiveChanged(ev)
   def keyPressEvent(self, ev):
+    print(ev)
     if ev.key() == QtKeyEscape:
       print("Escape")
     ev.action = 0

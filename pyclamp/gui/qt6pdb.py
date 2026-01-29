@@ -1,4 +1,4 @@
-from PyQt5.QtCore import pyqtRemoveInputHook
+from PyQt6.QtCore import pyqtRemoveInputHook
 import sys
 
 def set_trace():

@@ -6,8 +6,8 @@ from time import time
 import numpy as np
 import matplotlib as mpl
 #'''
-if mpl.get_backend() != 'Qt4Agg':
-  mpl.use('Qt4Agg')
+if mpl.get_backend() != 'Qt6Agg':
+  mpl.use('Qt6Agg')
   import PyQt4.QtCore as QtCore
 #'''
 import matplotlib.pyplot as mp

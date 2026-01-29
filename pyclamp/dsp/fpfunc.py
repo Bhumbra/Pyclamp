@@ -4,7 +4,8 @@ from pyclamp.dsp.lsfunc import *
 from pyclamp.dsp.dtypes import *
 from pyclamp.dsp.cstats import *
 from pyclamp.dsp.sifunc import *
-from numpy.core.umath_tests import inner1d
+#from numpy.core.umath_tests import inner1d
+from numpy import dot as inner1d
 import scipy.signal as signal
 import scipy.special as special
 import scipy.stats as stats
@@ -351,7 +352,7 @@ def nancopy(X):
   isarr = isarray(X)
   if not(isarr):
     if isNaN(X):
-      return np.NaN
+      return np.nan
     else:
       return X
   istup = type(X) is tuple
@@ -923,7 +924,7 @@ def naninterp2(X, left = None, right = None, inplace = False, recursive = True):
   rY = sY[0]
   cY = 1 if len(sY) < 2 else sY[1]
   NY = np.array(np.logical_not(nY), dtype = float)
-  NY[NY < 1] = np.NaN
+  NY[NY < 1] = np.nan
   N0 = NY * np.tile(np.arange(rY).reshape(rY, 1), (1, cY)) # Valid indices of each column
   N1 = NY * np.tile(np.arange(cY).reshape(1, cY), (rY, 1)) # Valid indices of each row
   N0min, N0max = np.nanmin(N0, axis = 0), np.nanmax(N0, axis = 0) # Valid extremes for each column

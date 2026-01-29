@@ -3,18 +3,21 @@
 ## Installation:
 
 This code is intended for a GNU/Linux environment. It has not been tested 
-outside GNU/Linux. A version of Python version >= 3.6 is required. 
+outside GNU/Linux. A version of Python version >= 3.11 is required and
+the graphical user interfaces requires Qt6 to be installed within the
+GNU/Linux along with associated dependencies (such the glib2 development
+package). 
 
 It is recommended for installers to create a Python virtual environment for 
 testing the code, for instance (you may need first to use your Linux package 
 manager to  install python3-venv):
 
 ```sh
-$ python3 -m venv ~/virtual_env
-$ source ~/virtual_env/bin/activate
+$ python3 -m venv venv
+$ source venv/bin/activate
 ```
 
-If your pip version is out of date, it needs to be upgraded (version>=20.0):
+If your pip version is out of date, it needs to be upgraded (version>=25.0):
 ```sh
 (virtual_env) $ pip3 --version
 (virtual_env) $ pip3 install -U pip

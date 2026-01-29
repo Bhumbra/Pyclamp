@@ -91,7 +91,7 @@ def lqlf(x, i, n, q, g, eps, plims=[0.04, 0.96], pgb=None):
   l = q / g
   nq = q * np.array(n, dtype=float)
   p = np.minimum(np.maximum(m / nq, plims[0]), plims[1])
-  d = int(np.nonzero(np.array(n.shape)>1)[0])
+  d = int(np.ravel(np.nonzero(np.array(n.shape)>1)[0])[0])
   N = np.ravel(n).tolist()
   X = np.ravel(x).tolist()
 
@@ -220,7 +220,7 @@ class BQA:
     self.model.set_prob(lqlf, eps=self.eps, pgb=pgb)
     call = {'x,i': self.xi, 'n':np.array(nset), 'q': {qres}, 'g': {gres}}
     ll = self.model(call)
-    self.llx = ll.rescaled(np.complex(np.mean(ll.prob)))
+    self.llx = ll.rescaled(complex(np.mean(ll.prob)))
     I = np.ravel(self.llx['i'])
     u = np.unique(I).tolist()
     self.lli = [self.llx({'i':i}, keepdims=True) for i in u]

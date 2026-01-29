@@ -1,6 +1,5 @@
 import numpy as np
 import pyqtgraph as pg
-from pyqtgraph.Qt import QtGui, QtCore
 import pyclamp.gui.pyqtplot as pq
 from pyclamp.dsp.lsfunc import *
 from pyclamp.dsp.fpfunc import *
@@ -201,12 +200,12 @@ class pysumm (pywavescattabl):
     self.Bbox = self.Dock.addBbox()
     self.area.add(self.Dock, 'bottom')
     i = 0
-    self.Bbox.addButton(QtGui.QDialogButtonBox.Apply)
+    self.Bbox.addButton(QtApply)
     self.Bbox.setText(i, 'OK')
     self.Bbox.setWidth(i, self.btnWidth)
     self.Bbox.Connect(i, self.OK)
     i += 1
-    self.Bbox.addButton(QtGui.QDialogButtonBox.Cancel)
+    self.Bbox.addButton(QtCancel)
     self.Bbox.setText(i, 'Cancel')
     self.Bbox.setWidth(i, self.btnWidth)
     self.Bbox.Connect(i, self.CC)

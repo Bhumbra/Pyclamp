@@ -1,8 +1,6 @@
 import numpy as np
 from pyclamp.dsp.lsfunc import *
 
-MAXSI = 9223372036854775807
-
 #-------------------------------------------------------------------------------
 def intravel(X):
   x = np.array(X.ravel(), dtype = int)
